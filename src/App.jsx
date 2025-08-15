@@ -20,15 +20,25 @@ const Section = ({ id, label, children, className = "" }) => (
 
 const Divider = () => <div className="h-px w-full bg-white/10 my-16"/>;
 
-const BigSpacedWord = ({ text }) => (
-  <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-[.25em] md:tracking-[.35em] uppercase text-center">
-    {text.split("").map((ch, i) => (
-      <motion.span key={i} initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: i * 0.03, type: "spring", stiffness: 120 }} viewport={{ once: true }} className="inline-block">
-        {ch === " " ? "\u00A0" : ch}
-      </motion.span>
-    ))}
-  </h1>
-);
+const BigSpacedWord = ({ text }) => {
+  const words = text.trim().split(/\s+/); // split by spaces, keep words intact
+  return (
+    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center">
+      {words.map((word, i) => (
+        <motion.span
+          key={i}
+          initial={{ y: 20, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          transition={{ delay: i * 0.08, type: "spring", stiffness: 120 }}
+          viewport={{ once: true }}
+          className="inline-block tracking-[.2em] md:tracking-[.28em] mr-4 last:mr-0"
+        >
+          {word}
+        </motion.span>
+      ))}
+    </h1>
+  );
+};
 
 const Pill = ({ children }) => (
   <span className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs tracking-wide uppercase">
@@ -176,7 +186,7 @@ export default function App() {
         <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-center">
           <div className="md:col-span-7 space-y-6">
             <Pill>Data Scientist</Pill>
-            <BigSpacedWord text="CANYENPALMER" />
+            <BigSpacedWord text="CANYEN PALMER" />
             <p className="text-lg md:text-xl text-white/85 max-w-2xl">
               I build data products and decision tools that turn messy datasets into clear, measurable outcomes — from ML models to automated billing analytics to polished web apps.
             </p>
@@ -203,7 +213,7 @@ export default function App() {
       {/* SERVICES */}
       <Section id="services" label="Services" className="py-6">
         <div className="mb-8">
-          <BigSpacedWord text="How Can I Help?" />
+          <BigSpacedWord text="My Services" />
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {services.map((s, i) => (
