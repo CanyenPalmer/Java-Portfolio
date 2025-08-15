@@ -20,10 +20,13 @@ const Section = ({ id, label, children, className = "" }) => (
 
 const Divider = () => <div className="h-px w-full bg-white/10 my-16"/>;
 
-const BigSpacedWord = ({ text, as: Tag = "h1" }) => {
+const BigSpacedWord = ({ text, as: Tag = "h1", nowrap = false }) => {
   const words = text.trim().split(/\s+/);
   return (
-    <Tag className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center whitespace-nowrap">
+    <Tag className={
+      `text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center
+       ${nowrap ? 'whitespace-nowrap' : ''}`
+    }>
       {words.map((word, i) => (
         <motion.span
           key={i}
@@ -186,7 +189,7 @@ export default function App() {
         <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-center">
           <div className="md:col-span-7 space-y-6">
             <Pill>Data Scientist</Pill>
-            <BigSpacedWord text="CANYEN PALMER" />
+            <BigSpacedWord text="CANYEN PALMER" as="h1" nowrap />
             <p className="text-lg md:text-xl text-white/85 max-w-2xl">
               I build data products and decision tools that turn messy datasets into clear, measurable outcomes — from ML models to automated billing analytics to polished web apps.
             </p>
@@ -213,7 +216,7 @@ export default function App() {
       {/* SERVICES */}
       <Section id="services" label="Services" className="py-6">
         <div className="mb-8">
-          <BigSpacedWord text="My Services" />
+          <BigSpacedWord text="My Services" as="h2" />
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {services.map((s, i) => (
@@ -293,7 +296,7 @@ export default function App() {
       <Section id="contact" label="Contact" className="py-12">
         <div className="grid md:grid-cols-12 gap-6 items-center">
           <div className="md:col-span-8">
-            <BigSpacedWord text={"Connect With Me"} />
+            <BigSpacedWord text="Connect With Me" as="h2" />
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <CTAButton href="mailto:canyen2019@gmail.com">Get In Touch</CTAButton>
               <a href="mailto:canyen2019@gmail.com" className="underline underline-offset-4">canyen2019@gmail.com</a>
