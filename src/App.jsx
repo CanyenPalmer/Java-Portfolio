@@ -122,25 +122,25 @@ export default function App() {
 
   const works = useMemo(() => ([
     { tag: "Golf Physics", title: "MyCaddy — Shot Calculator", role: "Design • Dev", year: "2024", url: "https://mycaddy.onrender.com/", img: IMG.mycaddy, alt: "MyCaddy rangefinder logo" },
-    { tag: "Machine Learning", title: "Salifort Motors — Attrition ML", role: "EDA • Modeling", year: "2024", url: "https://github.com/CanyenPalmer/Google_Capstone_Salifort_Attrition", img: IMG.salifort, alt: "Salifort Attrition project" },
-    { tag: "Healthcare Ops", title: "CGM Billing Analytics", role: "Automation • Python", year: "2025", url: "https://github.com/CanyenPalmer/CGM_Billing_Analytics", img: IMG.cgm, alt: "CGM billing analytics" },
-    { tag: "Real Estate (R)", title: "Ames Housing — Price Modeling", role: "Modeling • Viz", year: "2023", url: "https://github.com/CanyenPalmer/Real_Estate_Modeling_Ames_TX", img: IMG.realEstate, alt: "Ames housing real estate modeling" },
-    { tag: "Portfolio", title: "Palmer Projects Blog", role: "Design", year: "2025", url: "https://canyenpalmer.github.io/Portfolio/", img: IMG.portfolio, alt: "Palmer Projects blog thumbnail" },
+    { tag: "Machine Learning", title: "Salifort Motors — Attrition ML", role: "EDA • Modeling", year: "2024", url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning", img: IMG.salifort, alt: "Salifort Attrition project" },
+    { tag: "Healthcare Ops", title: "CGM Billing Analytics", role: "Automation • Python", year: "2025", url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics", img: IMG.cgm, alt: "CGM billing analytics" },
+    { tag: "Real Estate (R)", title: "Ames Housing — Price Modeling", role: "Modeling • Viz", year: "2023", url: "https://github.com/CanyenPalmer/R-Coding---Real-estate-Conditions-Comparrison", img: IMG.realEstate, alt: "Ames housing real estate modeling" },
+    { tag: "Portfolio", title: "Palmer Projects Blog", role: "Design", year: "2025", url: "https://github.com/CanyenPalmer/Java-Portfolio", img: IMG.portfolio, alt: "Palmer Projects blog thumbnail" },
   ]), []);
 
   const [tIndex, setTIndex] = useState(0);
   const testimonials = useMemo(() => ([
-    {
-      quote: "Canyen translated ambiguous goals into a crisp, interactive site. Clear comms, quick iterations, great results.",
-      author: "P. Patel",
-      title: "Founder @ HealthTech",
-    },
-    {
-      quote: "The animations feel premium without hurting performance. Our team loved the polish.",
-      author: "M. Rivera",
-      title: "Director of Marketing",
-    },
-  ]), []);
+  {
+    quote: "The MyCaddy tool gave us more confidence on the course! Super impressive.",
+    author: "C. Smith",
+    title: "Amateur Golfer",
+  },
+  {
+    quote: "Palmer Projects delivered exactly what we needed — fast, clean, and professional.",
+    author: "G. Waterman",
+    title: "Football Enthusiast",
+  },
+]), []);
 
   return (
     <main className="min-h-screen bg-[radial-gradient(60%_60%_at_50%_0%,rgba(255,255,255,0.12),rgba(0,0,0,0)_60%),linear-gradient(180deg,#0a0a0a, #050505)] text-white">
@@ -176,7 +176,7 @@ export default function App() {
         <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-center">
           <div className="md:col-span-7 space-y-6">
             <Pill>Data Scientist</Pill>
-            <BigSpacedWord text="CANYEN  PALMER" />
+            <BigSpacedWord text="CANYEN PALMER" />
             <p className="text-lg md:text-xl text-white/85 max-w-2xl">
               I build data products and decision tools that turn messy datasets into clear, measurable outcomes — from ML models to automated billing analytics to polished web apps.
             </p>
@@ -203,7 +203,7 @@ export default function App() {
       {/* SERVICES */}
       <Section id="services" label="Services" className="py-6">
         <div className="mb-8">
-          <BigSpacedWord text="H O W  I  C A N  H E L P  Y O U" />
+          <BigSpacedWord text="How Can I Help?" />
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {services.map((s, i) => (
