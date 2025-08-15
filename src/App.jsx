@@ -258,7 +258,7 @@ export default function App() {
       <Pill>Designer, Developer, Creator</Pill>
       <h3 className="text-3xl md:text-4xl font-semibold">About me</h3>
       <p className="text-white/85 leading-relaxed">
-        I turn business questions into deployable models and tools. I’m the Lead Analyst at Iconic Care Inc. (June 2025–present) and a Data Science M.S. student at the University of Pittsburgh (Aug 2025–present). Previously B.G.S. in Mathematics and A.A. in Computer Science from Ball State University. Tools I like: Python/Flask, React, SQLite, pandas, scikit-learn, tidyverse, and clean spreadsheets.
+        I turn business questions into deployable models and tools. I’m the Lead Analyst at Iconic Care Inc. (June 2025–present) and a Data Science M.S. student at the University of Pittsburgh (Aug 2025–present). Website Tech Stack: React, Tailwind CSS, Framer Motion, Lucide-react, JavaScript, HTML, CSS.
       </p>
     </div>
   </div>
