@@ -106,17 +106,17 @@ export default function App() {
     {
       title: "Data Apps & Automation",
       desc: "Operational tools that save hours and cut costs (Excel/PDF pipelines, web apps, and small APIs).",
-      bullets: ["Python • Flask", "Excel/OpenPyXL", "ETL & Scheduling"],
+      bullets: ["Python • Flask", "Excel / OpenPyXL", "ETL & Scheduling"],
     },
     {
       title: "Machine Learning & Analytics",
       desc: "From EDA to production‑ready models with clear business metrics and handoff docs.",
-      bullets: ["scikit‑learn/XGBoost", "Feature Engineering", "Evaluation/Monitoring"],
+      bullets: ["scikit‑learn / XGBoost", "Feature Engineering", "Evaluation / Monitoring"],
     },
     {
       title: "Dashboards & Visualization",
       desc: "Insights that decision‑makers actually use: clean, fast, and grounded in the data.",
-      bullets: ["Tableau/Power BI", "Matplotlib/ggplot2", "Storytelling"],
+      bullets: ["Tableau / Power BI", "Matplotlib / ggplot2", "Storytelling"],
     },
   ]), []);
 
@@ -254,19 +254,36 @@ export default function App() {
   </div>
 </Section>
 
-      {/* TESTIMONIALS */}
-      <Section id="testimonials" label="Testimonials" className="py-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-3xl md:text-4xl font-semibold">"The MyCaddy tool gave us more confidence on the course! Super impressive"</h3>
-          <div className="flex items-center gap-2">
-            <button onClick={() => setTIndex((tIndex - 1 + testimonials.length) % testimonials.length)} className="rounded-xl border border-white/15 px-3 py-2 hover:bg-white/10">Prev</button>
-            <button onClick={() => setTIndex((tIndex + 1) % testimonials.length)} className="rounded-xl border border-white/15 px-3 py-2 hover:bg-white/10">Next</button>
-          </div>
-        </div>
-        <div className="mt-4 text-center text-sm text-white/70">{tIndex + 1} / {testimonials.length}</div>
-      </Section>
+     {/* TESTIMONIALS */}
+<Section id="testimonials" label="Testimonials" className="py-6">
+  <div className="flex items-center justify-between mb-6">
+    <h3 className="text-3xl md:text-4xl font-semibold">
+      “{testimonials[tIndex].quote}”
+    </h3>
+    <div className="flex items-center gap-2">
+      <button
+        onClick={() => setTIndex((tIndex - 1 + testimonials.length) % testimonials.length)}
+        className="rounded-xl border border-white/15 px-3 py-2 hover:bg-white/10"
+      >
+        Prev
+      </button>
+      <button
+        onClick={() => setTIndex((tIndex + 1) % testimonials.length)}
+        className="rounded-xl border border-white/15 px-3 py-2 hover:bg-white/10"
+      >
+        Next
+      </button>
+    </div>
+  </div>
 
-      <Divider/>
+  <div className="text-white/70 mb-4">
+    <strong>{testimonials[tIndex].author}</strong> — {testimonials[tIndex].title}
+  </div>
+
+  <div className="mt-4 text-center text-sm text-white/70">
+    {tIndex + 1} / {testimonials.length}
+  </div>
+</Section>
 
       {/* CONTACT */}
       <Section id="contact" label="Contact" className="py-12">
