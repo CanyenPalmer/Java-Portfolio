@@ -176,12 +176,12 @@ export default function App() {
         <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-center">
           <div className="md:col-span-7 space-y-6">
             <Pill>Data Scientist</Pill>
-            <BigSpacedWord text="CANYEN PALMER" />
+            <BigSpacedWord text="CANYENPALMER" />
             <p className="text-lg md:text-xl text-white/85 max-w-2xl">
               I build data products and decision tools that turn messy datasets into clear, measurable outcomes — from ML models to automated billing analytics to polished web apps.
             </p>
             <div className="flex items-center gap-4">
-              <CTAButton href="#contact">Book a Call</CTAButton>
+              <CTAButton href="#contact">Let's Connect</CTAButton>
               <a href="#works" className="underline underline-offset-4">See my work</a>
             </div>
             <div className="flex items-center gap-3 pt-2 text-sm text-white/70">
@@ -289,7 +289,7 @@ export default function App() {
       <Section id="contact" label="Contact" className="py-12">
         <div className="grid md:grid-cols-12 gap-6 items-center">
           <div className="md:col-span-8">
-            <BigSpacedWord text={"L E T ’ S  M A K E  I T  H A P P E N"} />
+            <BigSpacedWord text={"Connect With Me"} />
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <CTAButton href="mailto:canyen2019@gmail.com">Get In Touch</CTAButton>
               <a href="mailto:canyen2019@gmail.com" className="underline underline-offset-4">canyen2019@gmail.com</a>
