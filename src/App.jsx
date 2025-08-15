@@ -20,10 +20,10 @@ const Section = ({ id, label, children, className = "" }) => (
 
 const Divider = () => <div className="h-px w-full bg-white/10 my-16"/>;
 
-const BigSpacedWord = ({ text }) => {
-  const words = text.trim().split(/\s+/); // split by spaces, keep words intact
+const BigSpacedWord = ({ text, as: Tag = "h1" }) => {
+  const words = text.trim().split(/\s+/);
   return (
-    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center">
+    <Tag className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center whitespace-nowrap">
       {words.map((word, i) => (
         <motion.span
           key={i}
@@ -36,7 +36,7 @@ const BigSpacedWord = ({ text }) => {
           {word}
         </motion.span>
       ))}
-    </h1>
+    </Tag>
   );
 };
 
@@ -264,35 +264,29 @@ export default function App() {
   </div>
 </Section>
 
-     {/* TESTIMONIALS */}
+    {/* TESTIMONIALS */}
 <Section id="testimonials" label="Testimonials" className="py-6">
-  <div className="flex items-center justify-between mb-6">
-    <h3 className="text-3xl md:text-4xl font-semibold">
-      “{testimonials[tIndex].quote}”
-    </h3>
-    <div className="flex items-center gap-2">
-      <button
-        onClick={() => setTIndex((tIndex - 1 + testimonials.length) % testimonials.length)}
-        className="rounded-xl border border-white/15 px-3 py-2 hover:bg-white/10"
-      >
-        Prev
-      </button>
-      <button
-        onClick={() => setTIndex((tIndex + 1) % testimonials.length)}
-        className="rounded-xl border border-white/15 px-3 py-2 hover:bg-white/10"
-      >
-        Next
-      </button>
-    </div>
-  </div>
-
-  <div className="text-white/70 mb-4">
-    <strong>{testimonials[tIndex].author}</strong> — {testimonials[tIndex].title}
-  </div>
-
-  <div className="mt-4 text-center text-sm text-white/70">
-    {tIndex + 1} / {testimonials.length}
-  </div>
+  {testimonials.length > 0 ? (
+    <>
+      <div className="flex items-center justify-between mb-6" aria-live="polite">
+        <h3 className="text-3xl md:text-4xl font-semibold">
+          “{testimonials[tIndex].quote}”
+        </h3>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setTIndex((tIndex - 1 + testimonials.length) % testimonials.length)} className="rounded-xl border border-white/15 px-3 py-2 hover:bg-white/10">Prev</button>
+          <button onClick={() => setTIndex((tIndex + 1) % testimonials.length)} className="rounded-xl border border-white/15 px-3 py-2 hover:bg-white/10">Next</button>
+        </div>
+      </div>
+      <div className="text-white/70 mb-4">
+        <strong>{testimonials[tIndex].author}</strong> — {testimonials[tIndex].title}
+      </div>
+      <div className="mt-4 text-center text-sm text-white/70">
+        {tIndex + 1} / {testimonials.length}
+      </div>
+    </>
+  ) : (
+    <p className="text-white/70">Testimonials coming soon.</p>
+  )}
 </Section>
 
       {/* CONTACT */}
