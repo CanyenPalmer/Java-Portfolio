@@ -257,7 +257,7 @@ export default function App() {
       {/* TESTIMONIALS */}
       <Section id="testimonials" label="Testimonials" className="py-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-3xl md:text-4xl font-semibold">Don’t take my word for it</h3>
+          <h3 className="text-3xl md:text-4xl font-semibold">"The MyCaddy tool gave us more confidence on the course! Super impressive"</h3>
           <div className="flex items-center gap-2">
             <button onClick={() => setTIndex((tIndex - 1 + testimonials.length) % testimonials.length)} className="rounded-xl border border-white/15 px-3 py-2 hover:bg-white/10">Prev</button>
             <button onClick={() => setTIndex((tIndex + 1) % testimonials.length)} className="rounded-xl border border-white/15 px-3 py-2 hover:bg-white/10">Next</button>
