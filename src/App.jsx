@@ -176,7 +176,7 @@ export default function App() {
         <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-center">
           <div className="md:col-span-7 space-y-6">
             <Pill>Data Scientist</Pill>
-            <BigSpacedWord text="C A N Y E N  P A L M E R" />
+            <BigSpacedWord text="CANYEN  PALMER" />
             <p className="text-lg md:text-xl text-white/85 max-w-2xl">
               I build data products and decision tools that turn messy datasets into clear, measurable outcomes — from ML models to automated billing analytics to polished web apps.
             </p>
@@ -230,24 +230,29 @@ export default function App() {
       <Divider/>
 
       {/* ABOUT */}
-      <Section id="about" label="About" className="py-6">
-        <div className="grid md:grid-cols-12 gap-8 items-center">
-          <div className="md:col-span-5">
-            <div className="aspect-square rounded-3xl border border-white/10 bg-white/5 overflow-hidden grid place-items-center">
-              <span className="text-white/70">Portrait</span>
-            </div>
-          </div>
-          <div className="md:col-span-7 space-y-4">
-            <Pill>Designer, Developer, Creator</Pill>
-            <h3 className="text-3xl md:text-4xl font-semibold">About me</h3>
-            <p className="text-white/85 leading-relaxed">
-              I turn business questions into deployable models and tools. I’m the Lead Analyst at Iconic Care Inc. (June 2025–present) and a Data Science M.S. student at the University of Pittsburgh (Aug 2025–present). Previously B.G.S. in Mathematics and A.A. in Computer Science from Ball State University. Tools I like: Python/Flask, React, SQLite, pandas, scikit‑learn, tidyverse, and clean spreadsheets.
-            </p>
-          </div>
-        </div>
-      </Section>
+<Section id="about" label="About" className="py-6">
+  <div className="grid md:grid-cols-12 gap-8 items-center">
+    {/* Left: portrait */}
+    <div className="md:col-span-5">
+      <div className="aspect-square rounded-3xl border border-white/10 bg-white/5 overflow-hidden">
+        <img
+          src="/images/portrait.jpg"
+          alt="Canyen Palmer"
+          className="w-full h-full object-cover"
+        />
+      </div>
+    </div>
 
-      <Divider/>
+    {/* Right: copy */}
+    <div className="md:col-span-7 space-y-4">
+      <Pill>Designer, Developer, Creator</Pill>
+      <h3 className="text-3xl md:text-4xl font-semibold">About me</h3>
+      <p className="text-white/85 leading-relaxed">
+        I turn business questions into deployable models and tools. I’m the Lead Analyst at Iconic Care Inc. (June 2025–present) and a Data Science M.S. student at the University of Pittsburgh (Aug 2025–present). Previously B.G.S. in Mathematics and A.A. in Computer Science from Ball State University. Tools I like: Python/Flask, React, SQLite, pandas, scikit-learn, tidyverse, and clean spreadsheets.
+      </p>
+    </div>
+  </div>
+</Section>
 
       {/* TESTIMONIALS */}
       <Section id="testimonials" label="Testimonials" className="py-6">
@@ -269,18 +274,16 @@ export default function App() {
           <div className="md:col-span-8">
             <BigSpacedWord text={"L E T ’ S  M A K E  I T  H A P P E N"} />
             <div className="mt-6 flex flex-wrap items-center gap-4">
-              <CTAButton href="mailto:cpalmer@iconiccareinc.com">Book a Call</CTAButton>
-              <a href="mailto:cpalmer@iconiccareinc.com" className="underline underline-offset-4">cpalmer@iconiccareinc.com</a>
+              <CTAButton href="mailto:canyen2019@gmail.com">Get In Touch</CTAButton>
+              <a href="mailto:canyen2019@gmail.com" className="underline underline-offset-4">canyen2019@gmail.com</a>
             </div>
             <p className="mt-4 text-white/70">Working globally • Based in Indiana</p>
           </div>
           <div className="md:col-span-4">
             <div className="rounded-3xl border border-white/10 p-6 space-y-3">
-              <div className="flex items-center gap-3"><Mail className="size-4"/> <a href="mailto:cpalmer@iconiccareinc.com" className="hover:underline">Email</a></div>
-              <div className="flex items-center gap-3"><Linkedin className="size-4"/> <a href="#" className="hover:underline">LinkedIn</a></div>
+              <div className="flex items-center gap-3"><Mail className="size-4"/> <a href="mailto:canyen2019@gmail.com" className="hover:underline">Email</a></div>
+              <div className="flex items-center gap-3"><Linkedin className="size-4"/> <a href="https://www.linkedin.com/in/canyen-palmer-b0b6762a0/" className="hover:underline">LinkedIn</a></div>
               <div className="flex items-center gap-3"><Github className="size-4"/> <a href="https://github.com/CanyenPalmer" className="hover:underline" target="_blank" rel="noreferrer">GitHub</a></div>
-              <div className="flex items-center gap-3"><Youtube className="size-4"/> <a href="#" className="hover:underline">YouTube</a></div>
-              <div className="flex items-center gap-3"><Instagram className="size-4"/> <a href="#" className="hover:underline">Instagram</a></div>
             </div>
           </div>
         </div>
