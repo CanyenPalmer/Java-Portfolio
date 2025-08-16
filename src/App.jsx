@@ -246,7 +246,7 @@ export default function App() {
       },
       {
         tag: "Portfolio",
-        title: "Palmer Projects Blog",
+        title: "Portfolio (This Site)",
         role: "Design",
         year: "2025",
         url: "https://github.com/CanyenPalmer/Java-Portfolio",
