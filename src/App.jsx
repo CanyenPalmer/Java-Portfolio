@@ -31,21 +31,27 @@ const Divider = () => <div className="h-px w-full bg-white/10 my-16" />;
 ------------------------------------------------------- */
 // HERO name — one line, animated by words
 const HeroName = ({ text }) => {
-  const words = text.trim().split(/\s+/);
+  const [first, last] = text.trim().split(" ");
   return (
     <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center">
-      {words.map((w, i) => (
-        <motion.span
-          key={i}
-          initial={{ y: 20, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ delay: i * 0.08, type: "spring", stiffness: 120 }}
-          viewport={{ once: true }}
-          className="block tracking-[.2em] md:tracking-[.28em] mb-2 last:mb-0"
-        >
-          {w}
-        </motion.span>
-      ))}
+      <motion.span
+        initial={{ y: 20, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0, type: "spring", stiffness: 120 }}
+        viewport={{ once: true }}
+        className="block tracking-[.2em] md:tracking-[.28em] mb-2"
+      >
+        {first}
+      </motion.span>
+      <motion.span
+        initial={{ y: 20, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.1, type: "spring", stiffness: 120 }}
+        viewport={{ once: true }}
+        className="block tracking-[.2em] md:tracking-[.28em]"
+      >
+        {last}
+      </motion.span>
     </h1>
   );
 };
