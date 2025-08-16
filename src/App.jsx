@@ -31,7 +31,10 @@ const Divider = () => <div className="h-px w-full bg-white/10 my-16" />;
 ------------------------------------------------------- */
 // HERO name — one line, animated by words
 const HeroName = ({ text }) => {
-  const [first, last] = text.trim().split(" ");
+  const parts = text.trim().split(/\s+/); // split on any whitespace
+  const first = parts[0] || "";
+  const last = parts.slice(1).join(" ") || ""; // join middle/last names on line 2
+
   return (
     <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center">
       <motion.span
