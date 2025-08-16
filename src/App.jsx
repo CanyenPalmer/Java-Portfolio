@@ -33,7 +33,7 @@ const Divider = () => <div className="h-px w-full bg-white/10 my-16" />;
 const HeroName = ({ text }) => {
   const words = text.trim().split(/\s+/);
   return (
-    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center whitespace-nowrap">
+    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center">
       {words.map((w, i) => (
         <motion.span
           key={i}
@@ -41,7 +41,7 @@ const HeroName = ({ text }) => {
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ delay: i * 0.08, type: "spring", stiffness: 120 }}
           viewport={{ once: true }}
-          className="inline-block tracking-[.2em] md:tracking-[.28em] mr-4 last:mr-0"
+          className="block tracking-[.2em] md:tracking-[.28em] mb-2 last:mb-0"
         >
           {w}
         </motion.span>
