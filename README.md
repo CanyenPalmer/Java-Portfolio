@@ -26,7 +26,7 @@ Deployed seamlessly with [Vercel](https://vercel.com).
   Built-in testimonial component with navigation (`Prev/Next`) that cycles through multiple quotes.
 
 - **About Section with Portrait**  
-  Direct integration of a personal headshot for a professional, personalized look.
+  Direct integration of a personal png for a professional, personalized look.
 
 - **Local Time Functionality (Custom Add-on)**  
   Displays location-aware time dynamically, making the portfolio feel interactive and context-aware.
