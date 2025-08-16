@@ -289,7 +289,7 @@ export default function App() {
           </nav>
           <div className="flex gap-3">
             <a
-              href="https://2d7974f8-5fa5-4136-aaa2-354b07c4877e.filesusr.com/ugd/a966b5_61a5d2301b5d4ab38f4bc989159e7c54.pdf"
+              href="https://2d7974f8-5fa5-4136-aaa2-354b07c4877e.filesusr.com/ugd/a966b5_adcc449c5de34caaa27646a5f237bc27.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 rounded-2xl border border-white/15 bg-white text-black px-4 py-2 font-semibold shadow-sm hover:shadow-lg transition-shadow"
