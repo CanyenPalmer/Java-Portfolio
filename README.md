@@ -52,6 +52,6 @@ Key sections include:
 - **Testimonials** – Real feedback with navigation.  
 - **Contact** – Simple and direct collaboration outreach.  
 
-Deployed on **Vercel** with support for **custom domains** (e.g., `canyenpalmer.com`) to ensure professional branding and accessibility.
+Deployed on **Vercel** , All Rights Reserved @ Canyen Palmer
 
 ---
