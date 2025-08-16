@@ -357,7 +357,7 @@ export default function App() {
 
       {/* WORKS */}
       <Section id="works" label="Selected Works" className="py-6">
-        <SectionTitle text="Selected Works" />
+        <SectionTitle text="Projects" />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
           {works.map((w, i) => (
             <WorkCard key={i} {...w} />
