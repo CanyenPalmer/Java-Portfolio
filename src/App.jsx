@@ -195,7 +195,7 @@ export default function App() {
       {
         title: "Machine Learning & Analytics",
         desc: "From EDA to production-ready models with clear business metrics and handoff docs.",
-        bullets: ["scikit-learn / XGBoost", "Feature Engineering", "Evaluation / Monitoring"],
+        bullets: ["scikit-learn / XGBoost", "Feature Engineering", "Evaluation & Monitoring"],
       },
       {
         title: "Dashboards & Visualization",
@@ -209,7 +209,7 @@ export default function App() {
   const works = useMemo(
     () => [
       {
-        tag: "Golf Physics",
+        tag: "Physics Application",
         title: "MyCaddy — Shot Calculator",
         role: "Design • Dev",
         year: "2025",
@@ -228,7 +228,7 @@ export default function App() {
       },
       {
         tag: "Healthcare Ops",
-        title: "CGM Billing Analytics",
+        title: "CGM Patient Analytics",
         role: "Automation • Python",
         year: "2025",
         url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics",
@@ -246,8 +246,8 @@ export default function App() {
       },
       {
         tag: "Portfolio",
-        title: "Portfolio (This Site)",
-        role: "Design",
+        title: "The Site You See Now",
+        role: "Design • JavaScript",
         year: "2025",
         url: "https://github.com/CanyenPalmer/Java-Portfolio",
         img: IMG.portfolio,
@@ -385,10 +385,10 @@ export default function App() {
           <div className="md:col-span-7 space-y-4">
             <Pill>Designer, Developer, Creator</Pill>
             <p className="text-white/85 leading-relaxed">
-              I turn business questions into deployable models and tools. I’m the Lead Analyst at Iconic Care Inc. (June 2025–present) and a Data Science M.S. student at the University of Pittsburgh (Aug 2025–present). Previously B.G.S. in Mathematics and A.A. in Computer Science from Ball State University. Tools I like: Python/Flask, React, SQLite, pandas, scikit-learn, tidyverse, and clean spreadsheets.
+              I turn business questions into deployable models/tools and spend my free time applying advanced analysis to golf! Currently, I am a Data Science M.S. student at the University of Pittsburgh (Aug 2025–present). Previously B.G.S. in Mathematics and A.A. in Computer Science from Ball State University. My preferred coding language is Python and I specialize in Optimization.
             </p>
             <p className="text-white/80 leading-relaxed">
-              Website tech stack: React, Tailwind CSS, Framer Motion, Lucide-react, JavaScript, HTML, CSS.
+              Website Tech Stack: React, Tailwind CSS, Framer Motion, Lucide-react, JavaScript, HTML, CSS.
             </p>
           </div>
         </div>
