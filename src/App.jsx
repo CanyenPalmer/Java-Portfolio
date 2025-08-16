@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, PlayCircle, Quote, Github, Linkedin, Mail, FileText } from "lucide-react";
+import { ArrowRight, PlayCircle, Github, Linkedin, Mail, FileText } from "lucide-react";
 
 /* -------------------------------------------------------
    ASSETS
@@ -94,7 +94,9 @@ const ServiceCard = ({ index, title, desc, bullets }) => (
     <p className="text-white/80 mb-6 leading-relaxed">{desc}</p>
     <ul className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
       {bullets.map((b, i) => (
-        <li key={i} className="rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-white/90">{b}</li>
+        <li key={i} className="rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-white/90">
+          {b}
+        </li>
       ))}
     </ul>
   </motion.div>
@@ -141,41 +143,127 @@ const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
 );
 
 /* -------------------------------------------------------
+   LOCAL TIME WIDGET
+------------------------------------------------------- */
+function LocalTime({ timeZone = "America/Indiana/Indianapolis", label = "Indianapolis" }) {
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const time = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  }).format(now);
+
+  const tzParts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    timeZoneName: "short",
+    hour: "numeric",
+  }).formatToParts(now);
+  const tzShort = tzParts.find((p) => p.type === "timeZoneName")?.value ?? "";
+
+  return <span aria-label={`Local time in ${label}`}>{time} {tzShort}</span>;
+}
+
+/* -------------------------------------------------------
    PAGE
 ------------------------------------------------------- */
 export default function App() {
   /* Data */
-  const services = useMemo(() => ([
-    {
-      title: "Data Apps & Automation",
-      desc: "Operational tools that save hours and cut costs (Excel/PDF pipelines, web apps, and small APIs).",
-      bullets: ["Python • Flask", "Excel / OpenPyXL", "ETL & Scheduling"],
-    },
-    {
-      title: "Machine Learning & Analytics",
-      desc: "From EDA to production-ready models with clear business metrics and handoff docs.",
-      bullets: ["scikit-learn / XGBoost", "Feature Engineering", "Evaluation / Monitoring"],
-    },
-    {
-      title: "Dashboards & Visualization",
-      desc: "Insights that decision-makers actually use: clean, fast, and grounded in the data.",
-      bullets: ["Tableau / Power BI", "Matplotlib / ggplot2", "Storytelling"],
-    },
-  ]), []);
+  const services = useMemo(
+    () => [
+      {
+        title: "Data Apps & Automation",
+        desc: "Operational tools that save hours and cut costs (Excel/PDF pipelines, web apps, and small APIs).",
+        bullets: ["Python • Flask", "Excel / OpenPyXL", "ETL & Scheduling"],
+      },
+      {
+        title: "Machine Learning & Analytics",
+        desc: "From EDA to production-ready models with clear business metrics and handoff docs.",
+        bullets: ["scikit-learn / XGBoost", "Feature Engineering", "Evaluation / Monitoring"],
+      },
+      {
+        title: "Dashboards & Visualization",
+        desc: "Insights that decision-makers actually use: clean, fast, and grounded in the data.",
+        bullets: ["Tableau / Power BI", "Matplotlib / ggplot2", "Storytelling"],
+      },
+    ],
+    []
+  );
 
-  const works = useMemo(() => ([
-    { tag: "Golf Physics", title: "MyCaddy — Shot Calculator", role: "Design • Dev", year: "2024", url: "https://mycaddy.onrender.com/", img: IMG.mycaddy, alt: "MyCaddy rangefinder logo" },
-    { tag: "Machine Learning", title: "Salifort Motors — Attrition ML", role: "EDA • Modeling", year: "2024", url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning", img: IMG.salifort, alt: "Salifort Attrition project" },
-    { tag: "Healthcare Ops", title: "CGM Billing Analytics", role: "Automation • Python", year: "2025", url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics", img: IMG.cgm, alt: "CGM billing analytics" },
-    { tag: "Real Estate (R)", title: "Ames Housing — Price Modeling", role: "Modeling • Viz", year: "2023", url: "https://github.com/CanyenPalmer/R-Coding---Real-estate-Conditions-Comparrison", img: IMG.realEstate, alt: "Ames housing real estate modeling" },
-    { tag: "Portfolio", title: "Palmer Projects Blog", role: "Design", year: "2025", url: "https://github.com/CanyenPalmer/Java-Portfolio", img: IMG.portfolio, alt: "Palmer Projects blog thumbnail" },
-  ]), []);
+  const works = useMemo(
+    () => [
+      {
+        tag: "Golf Physics",
+        title: "MyCaddy — Shot Calculator",
+        role: "Design • Dev",
+        year: "2024",
+        url: "https://mycaddy.onrender.com/",
+        img: IMG.mycaddy,
+        alt: "MyCaddy rangefinder logo",
+      },
+      {
+        tag: "Machine Learning",
+        title: "Salifort Motors — Attrition ML",
+        role: "EDA • Modeling",
+        year: "2024",
+        url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning",
+        img: IMG.salifort,
+        alt: "Salifort Attrition project",
+      },
+      {
+        tag: "Healthcare Ops",
+        title: "CGM Billing Analytics",
+        role: "Automation • Python",
+        year: "2025",
+        url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics",
+        img: IMG.cgm,
+        alt: "CGM billing analytics",
+      },
+      {
+        tag: "Real Estate (R)",
+        title: "Ames Housing — Price Modeling",
+        role: "Modeling • Viz",
+        year: "2023",
+        url: "https://github.com/CanyenPalmer/R-Coding---Real-estate-Conditions-Comparrison",
+        img: IMG.realEstate,
+        alt: "Ames housing real estate modeling",
+      },
+      {
+        tag: "Portfolio",
+        title: "Palmer Projects Blog",
+        role: "Design",
+        year: "2025",
+        url: "https://github.com/CanyenPalmer/Java-Portfolio",
+        img: IMG.portfolio,
+        alt: "Palmer Projects blog thumbnail",
+      },
+    ],
+    []
+  );
 
   const [tIndex, setTIndex] = useState(0);
-  const testimonials = useMemo(() => ([
-    { quote: "The MyCaddy tool gave us more confidence on the course! Super impressive.", author: "C. Smith", title: "Amateur Golfer" },
-    { quote: "Palmer Projects delivered exactly what we needed — fast, clean, and professional.", author: "G. Waterman", title: "Football Enthusiast" },
-  ]), []);
+  const testimonials = useMemo(
+    () => [
+      {
+        quote: "The MyCaddy tool gave us more confidence on the course! Super impressive.",
+        author: "C. Smith",
+        title: "Amateur Golfer",
+      },
+      {
+        quote: "Palmer Projects delivered exactly what we needed — fast, clean, and professional.",
+        author: "G. Waterman",
+        title: "Football Enthusiast",
+      },
+    ],
+    []
+  );
 
   return (
     <main className="min-h-screen bg-[radial-gradient(60%_60%_at_50%_0%,rgba(255,255,255,0.12),rgba(0,0,0,0)_60%),linear-gradient(180deg,#0a0a0a, #050505)] text-white">
@@ -389,7 +477,9 @@ export default function App() {
       <footer className="mt-16 border-t border-white/10 bg-black/30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid md:grid-cols-3 gap-6 items-center">
           <div className="text-sm text-white/70">© {new Date().getFullYear()} Canyen Palmer. All rights reserved.</div>
-          <div className="text-center text-sm text-white/60">Local time: America/Indiana/Indianapolis</div>
+          <div className="text-center text-sm text-white/60">
+            Local time: <LocalTime timeZone="America/Indiana/Indianapolis" label="Indianapolis" />
+          </div>
           <div className="flex justify-end gap-4 text-sm">
             <a className="hover:underline" href="#home">Home</a>
             <a className="hover:underline" href="#services">Services</a>
