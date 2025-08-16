@@ -212,7 +212,7 @@ export default function App() {
         tag: "Golf Physics",
         title: "MyCaddy — Shot Calculator",
         role: "Design • Dev",
-        year: "2024",
+        year: "2025",
         url: "https://mycaddy.onrender.com/",
         img: IMG.mycaddy,
         alt: "MyCaddy rangefinder logo",
