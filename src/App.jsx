@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, PlayCircle, Github, Linkedin, Mail, FileText } from "lucide-react";
 
 /* -------------------------------------------------------
@@ -24,33 +24,53 @@ const Section = ({ id, label, children, className = "" }) => (
   </section>
 );
 
-const Divider = () => <div className="h-px w-full bg-white/10 my-16" />;
+/* Animated divider */
+const Divider = () => (
+  <div className="my-16">
+    <motion.div
+      initial={{ scaleX: 0 }}
+      whileInView={{ scaleX: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="h-px w-full origin-left bg-white/10"
+    />
+  </div>
+);
 
 /* -------------------------------------------------------
    TITLES
 ------------------------------------------------------- */
-// HERO name — one line, animated by words
+/* Stacked, staggered hero name */
 const HeroName = ({ text }) => {
-  const parts = text.trim().split(/\s+/); // split on any whitespace
-  const first = parts[0] || "";
-  const last = parts.slice(1).join(" ") || ""; // join middle/last names on line 2
+  const [first, last] = text.trim().split(/\s+/, 2);
+
+  const word = {
+    hidden: { y: 24, opacity: 0 },
+    show: (i) => ({
+      y: 0,
+      opacity: 1,
+      transition: { delay: i * 0.08, type: "spring", stiffness: 140 },
+    }),
+  };
 
   return (
-    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center">
+    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center leading-tight">
       <motion.span
-        initial={{ y: 20, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0, type: "spring", stiffness: 120 }}
-        viewport={{ once: true }}
-        className="block tracking-[.2em] md:tracking-[.28em] mb-2"
+        custom={0}
+        variants={word}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.6 }}
+        className="block tracking-[.2em] md:tracking-[.28em]"
       >
         {first}
       </motion.span>
       <motion.span
-        initial={{ y: 20, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.1, type: "spring", stiffness: 120 }}
-        viewport={{ once: true }}
+        custom={1}
+        variants={word}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.6 }}
         className="block tracking-[.2em] md:tracking-[.28em]"
       >
         {last}
@@ -59,11 +79,17 @@ const HeroName = ({ text }) => {
   );
 };
 
-// Section titles — wraps naturally
+/* Section title reveal */
 const SectionTitle = ({ text }) => (
-  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase text-center tracking-wide">
+  <motion.h2
+    initial={{ y: 18, opacity: 0 }}
+    whileInView={{ y: 0, opacity: 1 }}
+    viewport={{ once: true, amount: 0.6 }}
+    transition={{ duration: 0.5 }}
+    className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase text-center tracking-wide"
+  >
     {text}
-  </h2>
+  </motion.h2>
 );
 
 /* -------------------------------------------------------
@@ -75,12 +101,23 @@ const Pill = ({ children }) => (
   </span>
 );
 
+/* Delightful CTA button */
 const CTAButton = ({ href = "#contact", children }) => (
-  <a
+  <motion.a
     href={href}
-    className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white text-black px-5 py-3 font-semibold shadow-sm hover:shadow-lg transition-shadow"
+    whileHover={{ y: -2, scale: 1.03, boxShadow: "0 12px 28px rgba(255,255,255,0.15)" }}
+    whileTap={{ scale: 0.98 }}
+    className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white text-black px-5 py-3 font-semibold shadow-sm transition-shadow"
   >
     {children} <ArrowRight className="size-4" />
+  </motion.a>
+);
+
+/* Navbar underline sweep */
+const NavLink = ({ href, children }) => (
+  <a href={href} className="relative group hover:opacity-90 transition-opacity">
+    <span>{children}</span>
+    <span className="pointer-events-none absolute -bottom-1 left-0 h-[2px] w-0 bg-white/80 transition-all duration-300 group-hover:w-full" />
   </a>
 );
 
@@ -111,23 +148,25 @@ const ServiceCard = ({ index, title, desc, bullets }) => (
   </motion.div>
 );
 
+/* Project card lift + overlay on hover */
 const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
   <motion.a
     href={url || "#"}
     target={url ? "_blank" : undefined}
     rel={url ? "noopener noreferrer" : undefined}
-    initial={{ y: 20, opacity: 0 }}
+    initial={{ y: 12, opacity: 0 }}
     whileInView={{ y: 0, opacity: 1 }}
     viewport={{ once: true }}
     transition={{ duration: 0.5 }}
-    className="block rounded-3xl overflow-hidden border border-white/10 bg-white/[.03] hover:bg-white/[.06] transition-colors"
+    whileHover={{ y: -6 }}
+    className="group block rounded-3xl overflow-hidden border border-white/10 bg-white/[.03] hover:bg-white/[.06] transition-colors"
   >
-    <div className="aspect-video overflow-hidden">
+    <div className="relative aspect-video overflow-hidden">
       {img ? (
         <img
           src={img}
           alt={alt || title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           loading="lazy"
           decoding="async"
         />
@@ -136,7 +175,22 @@ const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
           <PlayCircle className="size-16 md:size-20 opacity-70" />
         </div>
       )}
+
+      {/* Gradient overlay + badge on hover */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileHover={{ opacity: 1 }}
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"
+      />
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        whileHover={{ opacity: 1, y: 0 }}
+        className="pointer-events-none absolute bottom-3 right-3 text-xs tracking-wide bg-white text-black px-2 py-1 rounded-full"
+      >
+        View
+      </motion.div>
     </div>
+
     <div className="p-5 md:p-6 border-t border-white/10">
       <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide mb-2 text-white/70">
         <Pill>{tag}</Pill>
@@ -156,24 +210,14 @@ const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
 ------------------------------------------------------- */
 function LocalTime({ timeZone = "America/Indiana/Indianapolis", label = "Indianapolis" }) {
   const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
+  useEffect(() => { const id = setInterval(() => setNow(new Date()), 1000); return () => clearInterval(id); }, []);
 
   const time = new Intl.DateTimeFormat("en-US", {
-    timeZone,
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
+    timeZone, hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true,
   }).format(now);
 
   const tzParts = new Intl.DateTimeFormat("en-US", {
-    timeZone,
-    timeZoneName: "short",
-    hour: "numeric",
+    timeZone, timeZoneName: "short", hour: "numeric",
   }).formatToParts(now);
   const tzShort = tzParts.find((p) => p.type === "timeZoneName")?.value ?? "";
 
@@ -185,107 +229,57 @@ function LocalTime({ timeZone = "America/Indiana/Indianapolis", label = "Indiana
 ------------------------------------------------------- */
 export default function App() {
   /* Data */
-  const services = useMemo(
-    () => [
-      {
-        title: "Data Apps & Automation",
-        desc: "Operational tools that save hours and cut costs (Excel/PDF pipelines, web apps, and small APIs).",
-        bullets: ["Python • Flask", "Excel / OpenPyXL", "ETL & Scheduling"],
-      },
-      {
-        title: "Machine Learning & Analytics",
-        desc: "From EDA to production-ready models with clear business metrics and handoff docs.",
-        bullets: ["scikit-learn / XGBoost", "Feature Engineering", "Evaluation & Monitoring"],
-      },
-      {
-        title: "Dashboards & Visualization",
-        desc: "Insights that decision-makers actually use: clean, fast, and grounded in the data.",
-        bullets: ["Tableau / Power BI", "Matplotlib / ggplot2", "Storytelling"],
-      },
-    ],
-    []
-  );
+  const services = useMemo(() => [
+    {
+      title: "Data Apps & Automation",
+      desc: "Operational tools that save hours and cut costs (Excel/PDF pipelines, web apps, and small APIs).",
+      bullets: ["Python • Flask", "Excel / OpenPyXL", "ETL & Scheduling"],
+    },
+    {
+      title: "Machine Learning & Analytics",
+      desc: "From EDA to production-ready models with clear business metrics and handoff docs.",
+      bullets: ["scikit-learn / XGBoost", "Feature Engineering", "Evaluation / Monitoring"],
+    },
+    {
+      title: "Dashboards & Visualization",
+      desc: "Insights that decision-makers actually use: clean, fast, and grounded in the data.",
+      bullets: ["Tableau / Power BI", "Matplotlib / ggplot2", "Storytelling"],
+    },
+  ], []);
 
-  const works = useMemo(
-    () => [
-      {
-        tag: "Physics Application",
-        title: "MyCaddy — Shot Calculator",
-        role: "Design • Dev",
-        year: "2025",
-        url: "https://mycaddy.onrender.com/",
-        img: IMG.mycaddy,
-        alt: "MyCaddy rangefinder logo",
-      },
-      {
-        tag: "Machine Learning",
-        title: "Salifort Motors — Attrition ML",
-        role: "EDA • Modeling",
-        year: "2024",
-        url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning",
-        img: IMG.salifort,
-        alt: "Salifort Attrition project",
-      },
-      {
-        tag: "Healthcare Ops",
-        title: "CGM Patient Analytics",
-        role: "Automation • Python",
-        year: "2025",
-        url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics",
-        img: IMG.cgm,
-        alt: "CGM billing analytics",
-      },
-      {
-        tag: "Real Estate (R)",
-        title: "Ames Housing — Price Modeling",
-        role: "Modeling • Viz",
-        year: "2023",
-        url: "https://github.com/CanyenPalmer/R-Coding---Real-estate-Conditions-Comparrison",
-        img: IMG.realEstate,
-        alt: "Ames housing real estate modeling",
-      },
-      {
-        tag: "Portfolio",
-        title: "The Site You See Now",
-        role: "Design • JavaScript",
-        year: "2025",
-        url: "https://github.com/CanyenPalmer/Java-Portfolio",
-        img: IMG.portfolio,
-        alt: "Palmer Projects blog thumbnail",
-      },
-    ],
-    []
-  );
+  const works = useMemo(() => [
+    { tag: "Golf Physics", title: "MyCaddy — Shot Calculator", role: "Design • Dev", year: "2025", url: "https://mycaddy.onrender.com/", img: IMG.mycaddy, alt: "MyCaddy rangefinder logo" },
+    { tag: "Machine Learning", title: "Salifort Motors — Attrition ML", role: "EDA • Modeling", year: "2024", url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning", img: IMG.salifort, alt: "Salifort Attrition project" },
+    { tag: "Healthcare Ops", title: "CGM Billing Analytics", role: "Automation • Python", year: "2025", url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics", img: IMG.cgm, alt: "CGM billing analytics" },
+    { tag: "Real Estate (R)", title: "Ames Housing — Price Modeling", role: "Modeling • Viz", year: "2023", url: "https://github.com/CanyenPalmer/R-Coding---Real-estate-Conditions-Comparrison", img: IMG.realEstate, alt: "Ames housing real estate modeling" },
+    { tag: "Portfolio", title: "Portfolio (This Site)", role: "Design", year: "2025", url: "https://github.com/CanyenPalmer/Java-Portfolio", img: IMG.portfolio, alt: "Portfolio site" },
+  ], []);
 
   const [tIndex, setTIndex] = useState(0);
-  const testimonials = useMemo(
-    () => [
-      {
-        quote: "The MyCaddy tool gave us more confidence on the course! Super impressive.",
-        author: "C. Smith",
-        title: "Amateur Golfer",
-      },
-      {
-        quote: "Palmer Projects delivered exactly what we needed — fast, clean, and professional.",
-        author: "G. Waterman",
-        title: "Football Enthusiast",
-      },
-    ],
-    []
-  );
+  const testimonials = useMemo(() => [
+    { quote: "The MyCaddy tool gave us more confidence on the course! Super impressive.", author: "C. Smith", title: "Amateur Golfer" },
+    { quote: "Palmer Projects delivered exactly what we needed — fast, clean, and professional.", author: "G. Waterman", title: "Football Enthusiast" },
+  ], []);
+
+  /* Testimonial animation variants */
+  const tVariants = {
+    enter: { opacity: 0, y: 12 },
+    center: { opacity: 1, y: 0, transition: { duration: 0.35 } },
+    exit: { opacity: 0, y: -12, transition: { duration: 0.25 } },
+  };
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(60%_60%_at_50%_0%,rgba(255,255,255,0.12),rgba(0,0,0,0)_60%),linear-gradient(180deg,#0a0a0a, #050505)] text-white">
+    <main className="min-h-screen bg-[radial-gradient(60%_60%_at_50%_0%,rgba(255,255,255,0.12),rgba(0,0,0,0)_60%),linear-gradient(180deg,#0a0a0a,#050505)] text-white">
       {/* NAV */}
       <header className="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-black/30 bg-black/20 border-b border-white/10">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
           <a href="#home" className="font-semibold tracking-wide">Canyen Palmer</a>
           <nav className="hidden md:flex items-center gap-6 text-sm">
-            <a href="#services" className="hover:opacity-80">Services</a>
-            <a href="#works" className="hover:opacity-80">Works</a>
-            <a href="#about" className="hover:opacity-80">About</a>
-            <a href="#testimonials" className="hover:opacity-80">Testimonials</a>
-            <a href="#contact" className="hover:opacity-80">Contact</a>
+            <NavLink href="#services">Services</NavLink>
+            <NavLink href="#works">Works</NavLink>
+            <NavLink href="#about">About</NavLink>
+            <NavLink href="#testimonials">Testimonials</NavLink>
+            <NavLink href="#contact">Contact</NavLink>
           </nav>
           <div className="flex gap-3">
             <a
@@ -296,12 +290,7 @@ export default function App() {
             >
               <FileText className="size-4" /> Resume
             </a>
-            <a
-              href="#contact"
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white text-black px-4 py-2 font-semibold shadow-sm hover:shadow-lg transition-shadow"
-            >
-              Book a Call <ArrowRight className="size-4" />
-            </a>
+            <CTAButton href="#contact">Book a Call</CTAButton>
           </div>
         </div>
       </header>
@@ -343,10 +332,8 @@ export default function App() {
 
       {/* SERVICES */}
       <Section id="services" label="Services" className="py-6">
-        <div className="mb-8">
-          <SectionTitle text="My Services" />
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
+        <SectionTitle text="My Services" />
+        <div className="grid md:grid-cols-3 gap-6 mt-8">
           {services.map((s, i) => (
             <ServiceCard key={i} index={i} {...s} />
           ))}
@@ -385,10 +372,10 @@ export default function App() {
           <div className="md:col-span-7 space-y-4">
             <Pill>Designer, Developer, Creator</Pill>
             <p className="text-white/85 leading-relaxed">
-              I turn business questions into deployable models/tools and spend my free time applying advanced analysis to golf! Currently, I am a Data Science M.S. student at the University of Pittsburgh (Aug 2025–present). Previously B.G.S. in Mathematics and A.A. in Computer Science from Ball State University. My preferred coding language is Python and I specialize in Optimization.
+              I turn business questions into deployable models and tools. I’m the Lead Analyst at Iconic Care Inc. (June 2025–present) and a Data Science M.S. student at the University of Pittsburgh (Aug 2025–present). Previously B.G.S. in Mathematics and A.A. in Computer Science from Ball State University. Tools I like: Python/Flask, React, SQLite, pandas, scikit-learn, tidyverse, and clean spreadsheets.
             </p>
             <p className="text-white/80 leading-relaxed">
-              Website Tech Stack: React, Tailwind CSS, Framer Motion, Lucide-react, JavaScript, HTML, CSS.
+              Website tech stack: React, Tailwind CSS, Framer Motion, Lucide-react, JavaScript, HTML, CSS.
             </p>
           </div>
         </div>
@@ -400,11 +387,20 @@ export default function App() {
       <Section id="testimonials" label="Testimonials" className="py-6">
         <SectionTitle text="Testimonials" />
         {testimonials.length > 0 ? (
-          <>
-            <div className="flex items-center justify-between mb-6 mt-8" aria-live="polite">
-              <h3 className="text-2xl md:text-3xl font-semibold max-w-3xl">
-                “{testimonials[tIndex].quote}”
-              </h3>
+          <div className="mt-8">
+            <div className="flex items-center justify-between mb-6" aria-live="polite">
+              <AnimatePresence mode="wait">
+                <motion.h3
+                  key={tIndex}
+                  variants={tVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  className="text-2xl md:text-3xl font-semibold max-w-3xl"
+                >
+                  “{testimonials[tIndex].quote}”
+                </motion.h3>
+              </AnimatePresence>
               <div className="flex items-center gap-2">
                 <button
                   aria-label="Previous testimonial"
@@ -422,13 +418,24 @@ export default function App() {
                 </button>
               </div>
             </div>
-            <div className="text-white/70 mb-4">
-              <strong>{testimonials[tIndex].author}</strong> — {testimonials[tIndex].title}
-            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`meta-${tIndex}`}
+                variants={tVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                className="text-white/70 mb-2"
+              >
+                <strong>{testimonials[tIndex].author}</strong> — {testimonials[tIndex].title}
+              </motion.div>
+            </AnimatePresence>
+
             <div className="mt-2 text-center text-sm text-white/70">
               {tIndex + 1} / {testimonials.length}
             </div>
-          </>
+          </div>
         ) : (
           <p className="text-white/70 mt-6 text-center">Testimonials coming soon.</p>
         )}
@@ -502,3 +509,4 @@ export default function App() {
     </main>
   );
 }
+
