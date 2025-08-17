@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, PlayCircle, Github, Linkedin, Mail, FileText } from "lucide-react";
 
 /* -------------------------------------------------------
@@ -24,53 +24,33 @@ const Section = ({ id, label, children, className = "" }) => (
   </section>
 );
 
-/* Animated divider */
-const Divider = () => (
-  <div className="my-16">
-    <motion.div
-      initial={{ scaleX: 0 }}
-      whileInView={{ scaleX: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="h-px w-full origin-left bg-white/10"
-    />
-  </div>
-);
+const Divider = () => <div className="h-px w-full bg-white/10 my-16" />;
 
 /* -------------------------------------------------------
    TITLES
 ------------------------------------------------------- */
-/* Stacked, staggered hero name */
+// Stacked name in the hero (First on top, Last below)
 const HeroName = ({ text }) => {
-  const [first, last] = text.trim().split(/\s+/, 2);
-
-  const word = {
-    hidden: { y: 24, opacity: 0 },
-    show: (i) => ({
-      y: 0,
-      opacity: 1,
-      transition: { delay: i * 0.08, type: "spring", stiffness: 140 },
-    }),
-  };
+  const parts = text.trim().split(/\s+/);
+  const first = parts[0] || "";
+  const last = parts.slice(1).join(" ") || "";
 
   return (
-    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center leading-tight">
+    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center">
       <motion.span
-        custom={0}
-        variants={word}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.6 }}
-        className="block tracking-[.2em] md:tracking-[.28em]"
+        initial={{ y: 20, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0, type: "spring", stiffness: 120 }}
+        viewport={{ once: true }}
+        className="block tracking-[.2em] md:tracking-[.28em] mb-2"
       >
         {first}
       </motion.span>
       <motion.span
-        custom={1}
-        variants={word}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.6 }}
+        initial={{ y: 20, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.1, type: "spring", stiffness: 120 }}
+        viewport={{ once: true }}
         className="block tracking-[.2em] md:tracking-[.28em]"
       >
         {last}
@@ -79,17 +59,11 @@ const HeroName = ({ text }) => {
   );
 };
 
-/* Section title reveal */
+// General section titles
 const SectionTitle = ({ text }) => (
-  <motion.h2
-    initial={{ y: 18, opacity: 0 }}
-    whileInView={{ y: 0, opacity: 1 }}
-    viewport={{ once: true, amount: 0.6 }}
-    transition={{ duration: 0.5 }}
-    className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase text-center tracking-wide"
-  >
+  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase text-center tracking-wide">
     {text}
-  </motion.h2>
+  </h2>
 );
 
 /* -------------------------------------------------------
@@ -101,25 +75,130 @@ const Pill = ({ children }) => (
   </span>
 );
 
-/* Delightful CTA button */
-const CTAButton = ({ href = "#contact", children }) => (
-  <motion.a
-    href={href}
-    whileHover={{ y: -2, scale: 1.03, boxShadow: "0 12px 28px rgba(255,255,255,0.15)" }}
-    whileTap={{ scale: 0.98 }}
-    className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white text-black px-5 py-3 font-semibold shadow-sm transition-shadow"
-  >
-    {children} <ArrowRight className="size-4" />
-  </motion.a>
-);
+/* -------------------------------------------------------
+   HERO MICRO-ANIMATIONS
+------------------------------------------------------- */
+// 1) Rotating typewriter subtitle
+function Typewriter({ phrases, speed = 60, hold = 1400 }) {
+  const [i, setI] = useState(0);      // which phrase
+  const [j, setJ] = useState(0);      // which char
+  const [dir, setDir] = useState(1);  // 1 = typing, -1 = deleting
 
-/* Navbar underline sweep */
-const NavLink = ({ href, children }) => (
-  <a href={href} className="relative group hover:opacity-90 transition-opacity">
-    <span>{children}</span>
-    <span className="pointer-events-none absolute -bottom-1 left-0 h-[2px] w-0 bg-white/80 transition-all duration-300 group-hover:w-full" />
-  </a>
-);
+  useEffect(() => {
+    const current = phrases[i];
+    const isDoneTyping = j === current.length;
+    const isDoneDeleting = j === 0 && dir === -1;
+    const delay = dir === 1 ? speed : speed / 2;
+
+    const t = setTimeout(() => {
+      if (dir === 1) {
+        if (!isDoneTyping) return setJ(j + 1);
+        setTimeout(() => setDir(-1), hold);
+      } else {
+        if (!isDoneDeleting) return setJ(j - 1);
+        setI((i + 1) % phrases.length);
+        setDir(1);
+      }
+    }, delay);
+
+    return () => clearTimeout(t);
+  }, [phrases, i, j, dir, speed, hold]);
+
+  return (
+    <div className="text-lg md:text-xl text-white/85 text-center md:text-left">
+      {phrases[i].slice(0, j)}
+      <span className="opacity-70">|</span>
+    </div>
+  );
+}
+
+// 2) Soft animated gradient blobs behind hero
+function AnimatedGradientBg() {
+  return (
+    <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <motion.div
+        className="absolute top-[-20%] left-[-10%] h-[40rem] w-[40rem] rounded-full blur-3xl"
+        style={{ background: "radial-gradient(closest-side, rgba(0,180,255,.25), transparent)" }}
+        animate={{ x: [0, 40, -20, 0], y: [0, -30, 10, 0] }}
+        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute bottom-[-20%] right-[-10%] h-[38rem] w-[38rem] rounded-full blur-3xl"
+        style={{ background: "radial-gradient(closest-side, rgba(160,255,120,.2), transparent)" }}
+        animate={{ x: [0, -30, 15, 0], y: [0, 20, -25, 0] }}
+        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+      />
+    </div>
+  );
+}
+
+// 3) Floating + tilt headshot wrapper
+function FloatingTilt({ children }) {
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
+
+  function onMove(e) {
+    const r = e.currentTarget.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    const ry = (px - 0.5) * 10; // rotateY
+    const rx = (0.5 - py) * 6;  // rotateX
+    setTilt({ rx, ry });
+  }
+
+  return (
+    <motion.div
+      onMouseMove={onMove}
+      onMouseLeave={() => setTilt({ rx: 0, ry: 0 })}
+      style={{ transformStyle: "preserve-3d" }}
+      animate={{ y: [0, -6, 0] }}
+      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+      className="will-change-transform"
+    >
+      <motion.div
+        style={{ transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)` }}
+        transition={{ type: "spring", stiffness: 200, damping: 18 }}
+        className="rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
+      >
+        {children}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// 4) Shiny primary CTA
+function ShinyCTA({ href, children }) {
+  return (
+    <motion.a
+      href={href}
+      className="relative inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white text-black px-5 py-3 font-semibold shadow-sm overflow-hidden"
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      {children} <ArrowRight className="size-4" />
+      <motion.span
+        className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent"
+        animate={{ x: ["-120%", "120%"] }}
+        transition={{ duration: 1.6, repeat: Infinity, repeatDelay: 5 }}
+      />
+    </motion.a>
+  );
+}
+
+// 5) Scroll hint chevron
+function ScrollHint() {
+  return (
+    <motion.div
+      className="mt-6 flex items-center justify-center text-white/60 text-sm"
+      animate={{ y: [0, 6, 0] }}
+      transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+    >
+      <span className="mr-2">Scroll</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="opacity-80">
+        <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    </motion.div>
+  );
+}
 
 /* -------------------------------------------------------
    CARDS
@@ -148,25 +227,23 @@ const ServiceCard = ({ index, title, desc, bullets }) => (
   </motion.div>
 );
 
-/* Project card lift + overlay on hover */
 const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
   <motion.a
     href={url || "#"}
     target={url ? "_blank" : undefined}
     rel={url ? "noopener noreferrer" : undefined}
-    initial={{ y: 12, opacity: 0 }}
+    initial={{ y: 20, opacity: 0 }}
     whileInView={{ y: 0, opacity: 1 }}
     viewport={{ once: true }}
     transition={{ duration: 0.5 }}
-    whileHover={{ y: -6 }}
-    className="group block rounded-3xl overflow-hidden border border-white/10 bg-white/[.03] hover:bg-white/[.06] transition-colors"
+    className="block rounded-3xl overflow-hidden border border-white/10 bg-white/[.03] hover:bg-white/[.06] transition-colors"
   >
-    <div className="relative aspect-video overflow-hidden">
+    <div className="aspect-video overflow-hidden">
       {img ? (
         <img
           src={img}
           alt={alt || title}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+          className="w-full h-full object-cover"
           loading="lazy"
           decoding="async"
         />
@@ -175,22 +252,7 @@ const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
           <PlayCircle className="size-16 md:size-20 opacity-70" />
         </div>
       )}
-
-      {/* Gradient overlay + badge on hover */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileHover={{ opacity: 1 }}
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"
-      />
-      <motion.div
-        initial={{ opacity: 0, y: 6 }}
-        whileHover={{ opacity: 1, y: 0 }}
-        className="pointer-events-none absolute bottom-3 right-3 text-xs tracking-wide bg-white text-black px-2 py-1 rounded-full"
-      >
-        View
-      </motion.div>
     </div>
-
     <div className="p-5 md:p-6 border-t border-white/10">
       <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide mb-2 text-white/70">
         <Pill>{tag}</Pill>
@@ -210,14 +272,24 @@ const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
 ------------------------------------------------------- */
 function LocalTime({ timeZone = "America/Indiana/Indianapolis", label = "Indianapolis" }) {
   const [now, setNow] = useState(new Date());
-  useEffect(() => { const id = setInterval(() => setNow(new Date()), 1000); return () => clearInterval(id); }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
 
   const time = new Intl.DateTimeFormat("en-US", {
-    timeZone, hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true,
+    timeZone,
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
   }).format(now);
 
   const tzParts = new Intl.DateTimeFormat("en-US", {
-    timeZone, timeZoneName: "short", hour: "numeric",
+    timeZone,
+    timeZoneName: "short",
+    hour: "numeric",
   }).formatToParts(now);
   const tzShort = tzParts.find((p) => p.type === "timeZoneName")?.value ?? "";
 
@@ -228,58 +300,108 @@ function LocalTime({ timeZone = "America/Indiana/Indianapolis", label = "Indiana
    PAGE
 ------------------------------------------------------- */
 export default function App() {
-  /* Data */
-  const services = useMemo(() => [
-    {
-      title: "Data Apps & Automation",
-      desc: "Operational tools that save hours and cut costs (Excel/PDF pipelines, web apps, and small APIs).",
-      bullets: ["Python • Flask", "Excel / OpenPyXL", "ETL & Scheduling"],
-    },
-    {
-      title: "Machine Learning & Analytics",
-      desc: "From EDA to production-ready models with clear business metrics and handoff docs.",
-      bullets: ["scikit-learn / XGBoost", "Feature Engineering", "Evaluation / Monitoring"],
-    },
-    {
-      title: "Dashboards & Visualization",
-      desc: "Insights that decision-makers actually use: clean, fast, and grounded in the data.",
-      bullets: ["Tableau / Power BI", "Matplotlib / ggplot2", "Storytelling"],
-    },
-  ], []);
+  // Data
+  const services = useMemo(
+    () => [
+      {
+        title: "Data Apps & Automation",
+        desc: "Operational tools that save hours and cut costs (Excel/PDF pipelines, web apps, and small APIs).",
+        bullets: ["Python • Flask", "Excel / OpenPyXL", "ETL & Scheduling"],
+      },
+      {
+        title: "Machine Learning & Analytics",
+        desc: "From EDA to production-ready models with clear business metrics and handoff docs.",
+        bullets: ["scikit-learn / XGBoost", "Feature Engineering", "Evaluation / Monitoring"],
+      },
+      {
+        title: "Dashboards & Visualization",
+        desc: "Insights that decision-makers actually use: clean, fast, and grounded in the data.",
+        bullets: ["Tableau / Power BI", "Matplotlib / ggplot2", "Storytelling"],
+      },
+    ],
+    []
+  );
 
-  const works = useMemo(() => [
-    { tag: "Golf Physics", title: "MyCaddy — Shot Calculator", role: "Design • Dev", year: "2025", url: "https://mycaddy.onrender.com/", img: IMG.mycaddy, alt: "MyCaddy rangefinder logo" },
-    { tag: "Machine Learning", title: "Salifort Motors — Attrition ML", role: "EDA • Modeling", year: "2024", url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning", img: IMG.salifort, alt: "Salifort Attrition project" },
-    { tag: "Healthcare Ops", title: "CGM Billing Analytics", role: "Automation • Python", year: "2025", url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics", img: IMG.cgm, alt: "CGM billing analytics" },
-    { tag: "Real Estate (R)", title: "Ames Housing — Price Modeling", role: "Modeling • Viz", year: "2023", url: "https://github.com/CanyenPalmer/R-Coding---Real-estate-Conditions-Comparrison", img: IMG.realEstate, alt: "Ames housing real estate modeling" },
-    { tag: "Portfolio", title: "Portfolio (This Site)", role: "Design", year: "2025", url: "https://github.com/CanyenPalmer/Java-Portfolio", img: IMG.portfolio, alt: "Portfolio site" },
-  ], []);
+  const works = useMemo(
+    () => [
+      {
+        tag: "Golf Physics",
+        title: "MyCaddy — Shot Calculator",
+        role: "Design • Dev",
+        year: "2025",
+        url: "https://mycaddy.onrender.com/",
+        img: IMG.mycaddy,
+        alt: "MyCaddy rangefinder logo",
+      },
+      {
+        tag: "Machine Learning",
+        title: "Salifort Motors — Attrition ML",
+        role: "EDA • Modeling",
+        year: "2024",
+        url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning",
+        img: IMG.salifort,
+        alt: "Salifort Attrition project",
+      },
+      {
+        tag: "Healthcare Ops",
+        title: "CGM Billing Analytics",
+        role: "Automation • Python",
+        year: "2025",
+        url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics",
+        img: IMG.cgm,
+        alt: "CGM billing analytics",
+      },
+      {
+        tag: "Real Estate (R)",
+        title: "Ames Housing — Price Modeling",
+        role: "Modeling • Viz",
+        year: "2023",
+        url: "https://github.com/CanyenPalmer/R-Coding---Real-estate-Conditions-Comparrison",
+        img: IMG.realEstate,
+        alt: "Ames housing real estate modeling",
+      },
+      {
+        tag: "Portfolio",
+        title: "Portfolio (This Site)",
+        role: "Design",
+        year: "2025",
+        url: "https://github.com/CanyenPalmer/Java-Portfolio",
+        img: IMG.portfolio,
+        alt: "Palmer Projects blog thumbnail",
+      },
+    ],
+    []
+  );
 
   const [tIndex, setTIndex] = useState(0);
-  const testimonials = useMemo(() => [
-    { quote: "The MyCaddy tool gave us more confidence on the course! Super impressive.", author: "C. Smith", title: "Amateur Golfer" },
-    { quote: "Palmer Projects delivered exactly what we needed — fast, clean, and professional.", author: "G. Waterman", title: "Football Enthusiast" },
-  ], []);
-
-  /* Testimonial animation variants */
-  const tVariants = {
-    enter: { opacity: 0, y: 12 },
-    center: { opacity: 1, y: 0, transition: { duration: 0.35 } },
-    exit: { opacity: 0, y: -12, transition: { duration: 0.25 } },
-  };
+  const testimonials = useMemo(
+    () => [
+      {
+        quote: "The MyCaddy tool gave us more confidence on the course! Super impressive.",
+        author: "C. Smith",
+        title: "Amateur Golfer",
+      },
+      {
+        quote: "Palmer Projects delivered exactly what we needed — fast, clean, and professional.",
+        author: "G. Waterman",
+        title: "Football Enthusiast",
+      },
+    ],
+    []
+  );
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(60%_60%_at_50%_0%,rgba(255,255,255,0.12),rgba(0,0,0,0)_60%),linear-gradient(180deg,#0a0a0a,#050505)] text-white">
+    <main className="min-h-screen bg-[radial-gradient(60%_60%_at_50%_0%,rgba(255,255,255,0.12),rgba(0,0,0,0)_60%),linear-gradient(180deg,#0a0a0a, #050505)] text-white">
       {/* NAV */}
       <header className="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-black/30 bg-black/20 border-b border-white/10">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
           <a href="#home" className="font-semibold tracking-wide">Canyen Palmer</a>
           <nav className="hidden md:flex items-center gap-6 text-sm">
-            <NavLink href="#services">Services</NavLink>
-            <NavLink href="#works">Works</NavLink>
-            <NavLink href="#about">About</NavLink>
-            <NavLink href="#testimonials">Testimonials</NavLink>
-            <NavLink href="#contact">Contact</NavLink>
+            <a href="#services" className="hover:opacity-80">Services</a>
+            <a href="#works" className="hover:opacity-80">Works</a>
+            <a href="#about" className="hover:opacity-80">About</a>
+            <a href="#testimonials" className="hover:opacity-80">Testimonials</a>
+            <a href="#contact" className="hover:opacity-80">Contact</a>
           </nav>
           <div className="flex gap-3">
             <a
@@ -290,40 +412,63 @@ export default function App() {
             >
               <FileText className="size-4" /> Resume
             </a>
-            <CTAButton href="#contact">Book a Call</CTAButton>
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white text-black px-4 py-2 font-semibold shadow-sm hover:shadow-lg transition-shadow"
+            >
+              Book a Call <ArrowRight className="size-4" />
+            </a>
           </div>
         </div>
       </header>
 
       {/* HERO */}
-      <Section id="home" label="Hero" className="pt-16 md:pt-24">
+      <Section id="home" label="Hero" className="relative pt-16 md:pt-24">
+        <AnimatedGradientBg />
         <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-center">
           <div className="md:col-span-7 space-y-6">
             <Pill>Data Scientist</Pill>
-            <HeroName text="CANYEN PALMER" />
+
+            <HeroName text="Canyen Palmer" />
+
+            <Typewriter
+              phrases={[
+                "I build data products.",
+                "I ship automation and analytics.",
+                "I turn messy data into outcomes."
+              ]}
+            />
+
             <p className="text-lg md:text-xl text-white/85 max-w-2xl">
               I build data products and decision tools that turn messy datasets into clear, measurable outcomes — from ML models to automated billing analytics to polished web apps.
             </p>
+
             <div className="flex items-center gap-4">
-              <CTAButton href="#contact">Let's Connect</CTAButton>
+              <ShinyCTA href="#contact">Let's Connect</ShinyCTA>
               <a href="#works" className="underline underline-offset-4">See my work</a>
             </div>
+
             <div className="flex items-center gap-3 pt-2 text-sm text-white/70">
               <span>Available for select collaborations</span>
               <span className="opacity-50">•</span>
               <span>Open to proposals</span>
             </div>
+
+            <ScrollHint />
           </div>
+
           <div className="md:col-span-5">
-            <div className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden">
-              <img
-                src={IMG.hero}
-                alt="Canyen Palmer headshot"
-                className="w-full h-full object-cover"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
+            <FloatingTilt>
+              <div className="aspect-[4/5]">
+                <img
+                  src={IMG.hero}
+                  alt="Canyen Palmer headshot"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            </FloatingTilt>
           </div>
         </div>
       </Section>
@@ -332,8 +477,10 @@ export default function App() {
 
       {/* SERVICES */}
       <Section id="services" label="Services" className="py-6">
-        <SectionTitle text="My Services" />
-        <div className="grid md:grid-cols-3 gap-6 mt-8">
+        <div className="mb-8">
+          <SectionTitle text="My Services" />
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
           {services.map((s, i) => (
             <ServiceCard key={i} index={i} {...s} />
           ))}
@@ -387,20 +534,11 @@ export default function App() {
       <Section id="testimonials" label="Testimonials" className="py-6">
         <SectionTitle text="Testimonials" />
         {testimonials.length > 0 ? (
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-6" aria-live="polite">
-              <AnimatePresence mode="wait">
-                <motion.h3
-                  key={tIndex}
-                  variants={tVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  className="text-2xl md:text-3xl font-semibold max-w-3xl"
-                >
-                  “{testimonials[tIndex].quote}”
-                </motion.h3>
-              </AnimatePresence>
+          <>
+            <div className="flex items-center justify-between mb-6 mt-8" aria-live="polite">
+              <h3 className="text-2xl md:text-3xl font-semibold max-w-3xl">
+                “{testimonials[tIndex].quote}”
+              </h3>
               <div className="flex items-center gap-2">
                 <button
                   aria-label="Previous testimonial"
@@ -418,24 +556,13 @@ export default function App() {
                 </button>
               </div>
             </div>
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`meta-${tIndex}`}
-                variants={tVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                className="text-white/70 mb-2"
-              >
-                <strong>{testimonials[tIndex].author}</strong> — {testimonials[tIndex].title}
-              </motion.div>
-            </AnimatePresence>
-
+            <div className="text-white/70 mb-4">
+              <strong>{testimonials[tIndex].author}</strong> — {testimonials[tIndex].title}
+            </div>
             <div className="mt-2 text-center text-sm text-white/70">
               {tIndex + 1} / {testimonials.length}
             </div>
-          </div>
+          </>
         ) : (
           <p className="text-white/70 mt-6 text-center">Testimonials coming soon.</p>
         )}
@@ -449,7 +576,12 @@ export default function App() {
         <div className="grid md:grid-cols-12 gap-6 items-center mt-8">
           <div className="md:col-span-8">
             <div className="mt-6 flex flex-wrap items-center gap-4">
-              <CTAButton href="mailto:canyen2019@gmail.com">Get In Touch</CTAButton>
+              <a
+                href="mailto:canyen2019@gmail.com"
+                className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white text-black px-5 py-3 font-semibold shadow-sm hover:shadow-lg transition-shadow"
+              >
+                Get In Touch
+              </a>
               <a href="mailto:canyen2019@gmail.com" className="underline underline-offset-4">
                 canyen2019@gmail.com
               </a>
@@ -502,6 +634,7 @@ export default function App() {
             <a className="hover:underline" href="#works">Works</a>
             <a className="hover:underline" href="#about">About</a>
             <a className="hover:underline" href="#testimonials">Testimonials</a>
+            <a className="hover:underline" href="#testimonials">Testimonials</a>
             <a className="hover:underline" href="#contact">Contact</a>
           </div>
         </div>
@@ -510,3 +643,4 @@ export default function App() {
   );
 }
 
+           
