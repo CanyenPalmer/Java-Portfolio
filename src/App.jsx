@@ -337,27 +337,72 @@ export default function App() {
       </header>
 
       {/* HERO */}
-      <Section id="home" label="Hero" className="pt-16 md:pt-24">
-        <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-center">
-          <div className="md:col-span-7 space-y-6">
-            <Pill>Data Scientist</Pill>
-            <HeroName text="CANYEN PALMER" />
-            <p className="text-lg md:text-xl text-white/85 max-w-2xl">
-              I build data products and decision tools that turn messy datasets into clear, measurable outcomes — from ML models to automated billing analytics to polished web apps.
-              {/* Replace with your multi-line caption when ready */}
-            </p>
-            <div className="flex items-center gap-4">
-              <CTAButton href="#contact">Let's Connect</CTAButton>
-              <motion.a whileHover={{ opacity: 0.85 }} href="#works" className="underline underline-offset-4">
-                See my work
-              </motion.a>
-            </div>
-            <div className="flex items-center gap-3 pt-2 text-sm text-white/70">
-              <span>Available for select collaborations</span>
-              <span className="opacity-50">•</span>
-              <span>Open to proposals</span>
-            </div>
-          </div>
+<Section id="home" label="Hero" className="pt-16 md:pt-24">
+  <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-center">
+    <div className="md:col-span-7 space-y-6">
+      <Pill>Data Scientist</Pill>
+
+      {/* Stacked name (first line, second line) */}
+      <HeroName text="CANYEN PALMER" />
+
+      {/* Multi-line caption */}
+      <div className="text-white/85 max-w-2xl space-y-3">
+        <p className="text-lg md:text-xl">
+          Data Scientist & Google Certified Data Analyst Professional specializing in statistics,
+          machine learning, predictive modeling, and optimization.
+        </p>
+
+        <p className="text-sm md:text-base">
+          <span className="font-semibold">Proficiency:</span> Python, Excel, Tableau
+        </p>
+        <p className="text-sm md:text-base">
+          <span className="font-semibold">Familiarities:</span> R, Java, SQL, Jes, Power BI, AI
+        </p>
+        <p className="text-sm md:text-base">
+          <span className="font-semibold">Tech Stack:</span> Pandas/NumPy, Scipy, seaborn, Matplotlib,
+          statsmodels, Tidyverse, Git, Jupyter, CSV, Quarto(.qmd)
+        </p>
+
+        <p className="text-sm md:text-base text-white/80">
+          In my spare time, I use machine learning and predictive analysis to refine golf strategy
+          for family and friends. I also optimize data logs from simulator feedback to create yardage
+          books for various golf courses!
+        </p>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <CTAButton href="#contact">Let's Connect</CTAButton>
+        <motion.a whileHover={{ opacity: 0.85 }} href="#works" className="underline underline-offset-4">
+          See my work
+        </motion.a>
+      </div>
+
+      <div className="flex items-center gap-3 pt-2 text-sm text-white/70">
+        <span>Available for select collaborations</span>
+        <span className="opacity-50">•</span>
+        <span>Open to proposals</span>
+      </div>
+    </div>
+
+    {/* Floating headshot card (keeps the subtle float animation) */}
+    <div className="md:col-span-5">
+      <motion.div
+        initial={{ y: 0 }}
+        animate={{ y: [0, -8, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
+      >
+        <img
+          src={IMG.hero}
+          alt="Canyen Palmer headshot"
+          className="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      </motion.div>
+    </div>
+  </div>
+</Section>
 
           {/* Floating headshot card */}
           <div className="md:col-span-5">
