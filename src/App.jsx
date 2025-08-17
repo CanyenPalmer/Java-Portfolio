@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, PlayCircle, Github, Linkedin, Mail, FileText } from "lucide-react";
 
 /* -------------------------------------------------------
@@ -18,7 +18,7 @@ const IMG = {
    LAYOUT HELPERS
 ------------------------------------------------------- */
 const Section = ({ id, label, children, className = "" }) => (
-  <section id={id} className={`max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>
+  <section id={id} className={`relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>
     <div className="sr-only"><h2>{label}</h2></div>
     {children}
   </section>
@@ -29,7 +29,6 @@ const Divider = () => <div className="h-px w-full bg-white/10 my-16" />;
 /* -------------------------------------------------------
    TITLES
 ------------------------------------------------------- */
-// HERO name — stacked on two lines
 const HeroName = ({ text }) => {
   const parts = text.trim().split(/\s+/);
   const first = parts[0] ?? "";
@@ -39,7 +38,7 @@ const HeroName = ({ text }) => {
       <motion.span
         initial={{ y: 20, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0, type: "spring", stiffness: 120 }}
+        transition={{ delay: 0.0, type: "spring", stiffness: 120 }}
         viewport={{ once: true }}
         className="block tracking-[.2em] md:tracking-[.28em] mb-2"
       >
@@ -48,7 +47,7 @@ const HeroName = ({ text }) => {
       <motion.span
         initial={{ y: 20, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.1, type: "spring", stiffness: 120 }}
+        transition={{ delay: 0.12, type: "spring", stiffness: 120 }}
         viewport={{ once: true }}
         className="block tracking-[.2em] md:tracking-[.28em]"
       >
@@ -59,9 +58,15 @@ const HeroName = ({ text }) => {
 };
 
 const SectionTitle = ({ text }) => (
-  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase text-center tracking-wide">
+  <motion.h2
+    initial={{ y: 18, opacity: 0 }}
+    whileInView={{ y: 0, opacity: 1 }}
+    viewport={{ once: true, margin: "-20% 0px -20% 0px" }}
+    transition={{ duration: 0.5 }}
+    className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase text-center tracking-wide"
+  >
     {text}
-  </h2>
+  </motion.h2>
 );
 
 /* -------------------------------------------------------
@@ -74,12 +79,14 @@ const Pill = ({ children }) => (
 );
 
 const CTAButton = ({ href = "#contact", children }) => (
-  <a
+  <motion.a
     href={href}
+    whileHover={{ scale: 1.03 }}
+    whileTap={{ scale: 0.98 }}
     className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white text-black px-5 py-3 font-semibold shadow-sm hover:shadow-lg transition-shadow"
   >
     {children} <ArrowRight className="size-4" />
-  </a>
+  </motion.a>
 );
 
 /* -------------------------------------------------------
@@ -89,8 +96,8 @@ const ServiceCard = ({ index, title, desc, bullets }) => (
   <motion.div
     initial={{ y: 20, opacity: 0 }}
     whileInView={{ y: 0, opacity: 1 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.5, delay: index * 0.1 }}
+    viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
+    transition={{ duration: 0.5, delay: index * 0.08 }}
     className="group rounded-3xl border border-white/10 bg-white/[.03] p-6 md:p-8 hover:bg-white/[.06] transition-colors shadow-sm"
   >
     <div className="flex items-start justify-between mb-6">
@@ -116,7 +123,7 @@ const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
     rel={url ? "noopener noreferrer" : undefined}
     initial={{ y: 20, opacity: 0 }}
     whileInView={{ y: 0, opacity: 1 }}
-    viewport={{ once: true }}
+    viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
     transition={{ duration: 0.5 }}
     className="block rounded-3xl overflow-hidden border border-white/10 bg-white/[.03] hover:bg-white/[.06] transition-colors"
   >
@@ -182,6 +189,8 @@ function LocalTime({ timeZone = "America/Indiana/Indianapolis", label = "Indiana
    PAGE
 ------------------------------------------------------- */
 export default function App() {
+  const prefersReduced = useReducedMotion();
+
   /* Data */
   const services = useMemo(
     () => [
@@ -255,7 +264,7 @@ export default function App() {
     []
   );
 
-  // Testimonials (with Prev/Next/dots and optional autoplay)
+  // Testimonials — ONLY the two you want
   const testimonials = useMemo(
     () => [
       {
@@ -268,26 +277,38 @@ export default function App() {
         author: "G. Waterman",
         title: "Football Enthusiast",
       },
-      {
-        quote: "Clear communication, quick iterations, excellent results. Highly recommend.",
-        author: "P. Patel",
-        title: "Founder, HealthTech",
-      },
     ],
     []
   );
   const [tIndex, setTIndex] = useState(0);
 
-  // (Optional) Auto-advance every 6s
+  // Auto-advance every 6s (disabled if reduced motion)
   useEffect(() => {
+    if (prefersReduced) return;
     const id = setInterval(() => {
       setTIndex((i) => (i + 1) % testimonials.length);
     }, 6000);
     return () => clearInterval(id);
-  }, [testimonials.length]);
+  }, [testimonials.length, prefersReduced]);
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(60%_60%_at_50%_0%,rgba(255,255,255,0.12),rgba(0,0,0,0)_60%),linear-gradient(180deg,#0a0a0a, #050505)] text-white">
+    <main className="relative min-h-screen overflow-hidden bg-[radial-gradient(60%_60%_at_50%_0%,rgba(255,255,255,0.12),rgba(0,0,0,0)_60%),linear-gradient(180deg,#0a0a0a,#050505)] text-white">
+
+      {/* Decorative animated orb in the background */}
+      {!prefersReduced && (
+        <motion.div
+          aria-hidden="true"
+          initial={{ opacity: 0.25, scale: 0.9 }}
+          animate={{ opacity: 0.35, scale: 1.05 }}
+          transition={{ duration: 6, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
+          className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-96 w-96 rounded-full blur-3xl"
+          style={{
+            background:
+              "radial-gradient(closest-side, rgba(255,255,255,0.15), rgba(255,255,255,0.0))",
+          }}
+        />
+      )}
+
       {/* NAV */}
       <header className="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-black/30 bg-black/20 border-b border-white/10">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
@@ -300,20 +321,17 @@ export default function App() {
             <a href="#contact" className="hover:opacity-80">Contact</a>
           </nav>
           <div className="flex gap-3">
-            <a
+            <motion.a
               href="https://2d7974f8-5fa5-4136-aaa2-354b07c4877e.filesusr.com/ugd/a966b5_adcc449c5de34caaa27646a5f237bc27.pdf"
               target="_blank"
               rel="noopener noreferrer"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
               className="inline-flex items-center gap-1 rounded-2xl border border-white/15 bg-white text-black px-4 py-2 font-semibold shadow-sm hover:shadow-lg transition-shadow"
             >
               <FileText className="size-4" /> Resume
-            </a>
-            <a
-              href="#contact"
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white text-black px-4 py-2 font-semibold shadow-sm hover:shadow-lg transition-shadow"
-            >
-              Book a Call <ArrowRight className="size-4" />
-            </a>
+            </motion.a>
+            <CTAButton href="#contact">Book a Call</CTAButton>
           </div>
         </div>
       </header>
@@ -326,11 +344,13 @@ export default function App() {
             <HeroName text="CANYEN PALMER" />
             <p className="text-lg md:text-xl text-white/85 max-w-2xl">
               I build data products and decision tools that turn messy datasets into clear, measurable outcomes — from ML models to automated billing analytics to polished web apps.
-              {/* Replace the line above with your newer multi-line caption if desired */}
+              {/* Replace with your multi-line caption when ready */}
             </p>
             <div className="flex items-center gap-4">
               <CTAButton href="#contact">Let's Connect</CTAButton>
-              <a href="#works" className="underline underline-offset-4">See my work</a>
+              <motion.a whileHover={{ opacity: 0.85 }} href="#works" className="underline underline-offset-4">
+                See my work
+              </motion.a>
             </div>
             <div className="flex items-center gap-3 pt-2 text-sm text-white/70">
               <span>Available for select collaborations</span>
@@ -338,8 +358,15 @@ export default function App() {
               <span>Open to proposals</span>
             </div>
           </div>
+
+          {/* Floating headshot card */}
           <div className="md:col-span-5">
-            <div className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden">
+            <motion.div
+              initial={{ y: 0 }}
+              animate={prefersReduced ? {} : { y: [0, -8, 0] }}
+              transition={prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
+            >
               <img
                 src={IMG.hero}
                 alt="Canyen Palmer headshot"
@@ -347,7 +374,7 @@ export default function App() {
                 loading="lazy"
                 decoding="async"
               />
-            </div>
+            </motion.div>
           </div>
         </div>
       </Section>
@@ -385,7 +412,13 @@ export default function App() {
         <SectionTitle text="About Me" />
         <div className="grid md:grid-cols-12 gap-8 items-center mt-8">
           <div className="md:col-span-5">
-            <div className="aspect-square rounded-3xl border border-white/10 bg-white/5 overflow-hidden">
+            <motion.div
+              initial={{ scale: 0.98, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="aspect-square rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
+            >
               <img
                 src="/images/portrait.jpg"
                 alt="Canyen Palmer portrait"
@@ -393,7 +426,7 @@ export default function App() {
                 loading="lazy"
                 decoding="async"
               />
-            </div>
+            </motion.div>
           </div>
           <div className="md:col-span-7 space-y-4">
             <Pill>Designer, Developer, Creator</Pill>
@@ -431,13 +464,14 @@ export default function App() {
             </motion.div>
 
             <div className="mt-8 flex items-center justify-between">
-              <button
+              <motion.button
+                whileTap={{ scale: 0.97 }}
                 aria-label="Previous testimonial"
                 onClick={() => setTIndex((tIndex - 1 + testimonials.length) % testimonials.length)}
                 className="rounded-xl border border-white/15 px-4 py-2 hover:bg-white/10"
               >
                 Prev
-              </button>
+              </motion.button>
 
               <div className="flex items-center gap-2">
                 {testimonials.map((_, i) => (
@@ -452,13 +486,14 @@ export default function App() {
                 ))}
               </div>
 
-              <button
+              <motion.button
+                whileTap={{ scale: 0.97 }}
                 aria-label="Next testimonial"
                 onClick={() => setTIndex((tIndex + 1) % testimonials.length)}
                 className="rounded-xl border border-white/15 px-4 py-2 hover:bg-white/10"
               >
                 Next
-              </button>
+              </motion.button>
             </div>
 
             <div className="mt-3 text-center text-sm text-white/60">
