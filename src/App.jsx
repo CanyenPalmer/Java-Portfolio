@@ -294,7 +294,7 @@ export default function App() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[radial-gradient(60%_60%_at_50%_0%,rgba(255,255,255,0.12),rgba(0,0,0,0)_60%),linear-gradient(180deg,#0a0a0a,#050505)] text-white">
 
-      {/* Decorative animated orb in the background */}
+      {/* Decorative animated orb */}
       {!prefersReduced && (
         <motion.div
           aria-hidden="true"
@@ -342,7 +342,6 @@ export default function App() {
           <div className="md:col-span-7 space-y-6">
             <Pill>Data Scientist</Pill>
 
-            {/* Stacked name (first line, second line) */}
             <HeroName text="CANYEN PALMER" />
 
             {/* Multi-line caption */}
@@ -383,26 +382,6 @@ export default function App() {
               <span>Open to proposals</span>
             </div>
           </div>
-
-          {/* Floating headshot card (keeps the subtle float animation) */}
-          <div className="md:col-span-5">
-            <motion.div
-              initial={{ y: 0 }}
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
-            >
-              <img
-                src={IMG.hero}
-                alt="Canyen Palmer headshot"
-                className="w-full h-full object-cover"
-                loading="lazy"
-                decoding="async"
-              />
-            </motion.div>
-          </div>
-        </div>
-      </Section>
 
           {/* Floating headshot card */}
           <div className="md:col-span-5">
@@ -550,7 +529,7 @@ export default function App() {
 
       <Divider />
 
-      {/* CONTACT */}
+      {/* CONTACT (restored) */}
       <Section id="contact" label="Contact" className="py-12">
         <SectionTitle text="Connect With Me" />
         <div className="grid md:grid-cols-12 gap-6 items-center mt-8">
@@ -597,7 +576,7 @@ export default function App() {
       </Section>
 
       {/* FOOTER */}
-      <footer className="mt-16 border-t border-white/10 bg-black/30">
+      <footer className="mt-16 border-top border-white/10 bg-black/30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid md:grid-cols-3 gap-6 items-center">
           <div className="text-sm text-white/70">© {new Date().getFullYear()} Canyen Palmer. All rights reserved.</div>
           <div className="text-center text-sm text-white/60">
