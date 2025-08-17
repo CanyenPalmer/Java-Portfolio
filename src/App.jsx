@@ -29,12 +29,11 @@ const Divider = () => <div className="h-px w-full bg-white/10 my-16" />;
 /* -------------------------------------------------------
    TITLES
 ------------------------------------------------------- */
-// Stacked name in the hero (First on top, Last below)
+// HERO name — stacked on two lines
 const HeroName = ({ text }) => {
   const parts = text.trim().split(/\s+/);
-  const first = parts[0] || "";
-  const last = parts.slice(1).join(" ") || "";
-
+  const first = parts[0] ?? "";
+  const last = parts.slice(1).join(" ") ?? "";
   return (
     <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center">
       <motion.span
@@ -59,7 +58,6 @@ const HeroName = ({ text }) => {
   );
 };
 
-// General section titles
 const SectionTitle = ({ text }) => (
   <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase text-center tracking-wide">
     {text}
@@ -75,130 +73,14 @@ const Pill = ({ children }) => (
   </span>
 );
 
-/* -------------------------------------------------------
-   HERO MICRO-ANIMATIONS
-------------------------------------------------------- */
-// 1) Rotating typewriter subtitle
-function Typewriter({ phrases, speed = 60, hold = 1400 }) {
-  const [i, setI] = useState(0);      // which phrase
-  const [j, setJ] = useState(0);      // which char
-  const [dir, setDir] = useState(1);  // 1 = typing, -1 = deleting
-
-  useEffect(() => {
-    const current = phrases[i];
-    const isDoneTyping = j === current.length;
-    const isDoneDeleting = j === 0 && dir === -1;
-    const delay = dir === 1 ? speed : speed / 2;
-
-    const t = setTimeout(() => {
-      if (dir === 1) {
-        if (!isDoneTyping) return setJ(j + 1);
-        setTimeout(() => setDir(-1), hold);
-      } else {
-        if (!isDoneDeleting) return setJ(j - 1);
-        setI((i + 1) % phrases.length);
-        setDir(1);
-      }
-    }, delay);
-
-    return () => clearTimeout(t);
-  }, [phrases, i, j, dir, speed, hold]);
-
-  return (
-    <div className="text-lg md:text-xl text-white/85 text-center md:text-left">
-      {phrases[i].slice(0, j)}
-      <span className="opacity-70">|</span>
-    </div>
-  );
-}
-
-// 2) Soft animated gradient blobs behind hero
-function AnimatedGradientBg() {
-  return (
-    <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-      <motion.div
-        className="absolute top-[-20%] left-[-10%] h-[40rem] w-[40rem] rounded-full blur-3xl"
-        style={{ background: "radial-gradient(closest-side, rgba(0,180,255,.25), transparent)" }}
-        animate={{ x: [0, 40, -20, 0], y: [0, -30, 10, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute bottom-[-20%] right-[-10%] h-[38rem] w-[38rem] rounded-full blur-3xl"
-        style={{ background: "radial-gradient(closest-side, rgba(160,255,120,.2), transparent)" }}
-        animate={{ x: [0, -30, 15, 0], y: [0, 20, -25, 0] }}
-        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-      />
-    </div>
-  );
-}
-
-// 3) Floating + tilt headshot wrapper
-function FloatingTilt({ children }) {
-  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
-
-  function onMove(e) {
-    const r = e.currentTarget.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width;
-    const py = (e.clientY - r.top) / r.height;
-    const ry = (px - 0.5) * 10; // rotateY
-    const rx = (0.5 - py) * 6;  // rotateX
-    setTilt({ rx, ry });
-  }
-
-  return (
-    <motion.div
-      onMouseMove={onMove}
-      onMouseLeave={() => setTilt({ rx: 0, ry: 0 })}
-      style={{ transformStyle: "preserve-3d" }}
-      animate={{ y: [0, -6, 0] }}
-      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-      className="will-change-transform"
-    >
-      <motion.div
-        style={{ transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)` }}
-        transition={{ type: "spring", stiffness: 200, damping: 18 }}
-        className="rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
-      >
-        {children}
-      </motion.div>
-    </motion.div>
-  );
-}
-
-// 4) Shiny primary CTA
-function ShinyCTA({ href, children }) {
-  return (
-    <motion.a
-      href={href}
-      className="relative inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white text-black px-5 py-3 font-semibold shadow-sm overflow-hidden"
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-    >
-      {children} <ArrowRight className="size-4" />
-      <motion.span
-        className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent"
-        animate={{ x: ["-120%", "120%"] }}
-        transition={{ duration: 1.6, repeat: Infinity, repeatDelay: 5 }}
-      />
-    </motion.a>
-  );
-}
-
-// 5) Scroll hint chevron
-function ScrollHint() {
-  return (
-    <motion.div
-      className="mt-6 flex items-center justify-center text-white/60 text-sm"
-      animate={{ y: [0, 6, 0] }}
-      transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-    >
-      <span className="mr-2">Scroll</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="opacity-80">
-        <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    </motion.div>
-  );
-}
+const CTAButton = ({ href = "#contact", children }) => (
+  <a
+    href={href}
+    className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white text-black px-5 py-3 font-semibold shadow-sm hover:shadow-lg transition-shadow"
+  >
+    {children} <ArrowRight className="size-4" />
+  </a>
+);
 
 /* -------------------------------------------------------
    CARDS
@@ -300,7 +182,7 @@ function LocalTime({ timeZone = "America/Indiana/Indianapolis", label = "Indiana
    PAGE
 ------------------------------------------------------- */
 export default function App() {
-  // Data
+  /* Data */
   const services = useMemo(
     () => [
       {
@@ -373,7 +255,7 @@ export default function App() {
     []
   );
 
-  const [tIndex, setTIndex] = useState(0);
+  // Testimonials (with Prev/Next/dots and optional autoplay)
   const testimonials = useMemo(
     () => [
       {
@@ -386,9 +268,23 @@ export default function App() {
         author: "G. Waterman",
         title: "Football Enthusiast",
       },
+      {
+        quote: "Clear communication, quick iterations, excellent results. Highly recommend.",
+        author: "P. Patel",
+        title: "Founder, HealthTech",
+      },
     ],
     []
   );
+  const [tIndex, setTIndex] = useState(0);
+
+  // (Optional) Auto-advance every 6s
+  useEffect(() => {
+    const id = setInterval(() => {
+      setTIndex((i) => (i + 1) % testimonials.length);
+    }, 6000);
+    return () => clearInterval(id);
+  }, [testimonials.length]);
 
   return (
     <main className="min-h-screen bg-[radial-gradient(60%_60%_at_50%_0%,rgba(255,255,255,0.12),rgba(0,0,0,0)_60%),linear-gradient(180deg,#0a0a0a, #050505)] text-white">
@@ -423,52 +319,35 @@ export default function App() {
       </header>
 
       {/* HERO */}
-      <Section id="home" label="Hero" className="relative pt-16 md:pt-24">
-        <AnimatedGradientBg />
+      <Section id="home" label="Hero" className="pt-16 md:pt-24">
         <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-center">
           <div className="md:col-span-7 space-y-6">
             <Pill>Data Scientist</Pill>
-
-            <HeroName text="Canyen Palmer" />
-
-            <Typewriter
-              phrases={[
-                "I build data products.",
-                "I ship automation and analytics.",
-                "I turn messy data into outcomes."
-              ]}
-            />
-
+            <HeroName text="CANYEN PALMER" />
             <p className="text-lg md:text-xl text-white/85 max-w-2xl">
               I build data products and decision tools that turn messy datasets into clear, measurable outcomes — from ML models to automated billing analytics to polished web apps.
+              {/* Replace the line above with your newer multi-line caption if desired */}
             </p>
-
             <div className="flex items-center gap-4">
-              <ShinyCTA href="#contact">Let's Connect</ShinyCTA>
+              <CTAButton href="#contact">Let's Connect</CTAButton>
               <a href="#works" className="underline underline-offset-4">See my work</a>
             </div>
-
             <div className="flex items-center gap-3 pt-2 text-sm text-white/70">
               <span>Available for select collaborations</span>
               <span className="opacity-50">•</span>
               <span>Open to proposals</span>
             </div>
-
-            <ScrollHint />
           </div>
-
           <div className="md:col-span-5">
-            <FloatingTilt>
-              <div className="aspect-[4/5]">
-                <img
-                  src={IMG.hero}
-                  alt="Canyen Palmer headshot"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-            </FloatingTilt>
+            <div className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden">
+              <img
+                src={IMG.hero}
+                alt="Canyen Palmer headshot"
+                className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
           </div>
         </div>
       </Section>
@@ -530,42 +409,63 @@ export default function App() {
 
       <Divider />
 
-      {/* TESTIMONIALS */}
+      {/* TESTIMONIALS (Carousel) */}
       <Section id="testimonials" label="Testimonials" className="py-6">
         <SectionTitle text="Testimonials" />
-        {testimonials.length > 0 ? (
-          <>
-            <div className="flex items-center justify-between mb-6 mt-8" aria-live="polite">
-              <h3 className="text-2xl md:text-3xl font-semibold max-w-3xl">
+        <div className="mt-8 max-w-4xl mx-auto">
+          <div className="rounded-3xl border border-white/10 bg-white/[.03] p-6 md:p-10">
+            <motion.div
+              key={tIndex}
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.35 }}
+            >
+              <p className="text-xl md:text-2xl leading-relaxed text-center">
                 “{testimonials[tIndex].quote}”
-              </h3>
-              <div className="flex items-center gap-2">
-                <button
-                  aria-label="Previous testimonial"
-                  onClick={() => setTIndex((tIndex - 1 + testimonials.length) % testimonials.length)}
-                  className="rounded-xl border border-white/15 px-3 py-2 hover:bg-white/10"
-                >
-                  Prev
-                </button>
-                <button
-                  aria-label="Next testimonial"
-                  onClick={() => setTIndex((tIndex + 1) % testimonials.length)}
-                  className="rounded-xl border border-white/15 px-3 py-2 hover:bg-white/10"
-                >
-                  Next
-                </button>
+              </p>
+              <div className="mt-6 text-center text-white/80">
+                <strong>{testimonials[tIndex].author}</strong>
+                <span className="opacity-60"> — {testimonials[tIndex].title}</span>
               </div>
+            </motion.div>
+
+            <div className="mt-8 flex items-center justify-between">
+              <button
+                aria-label="Previous testimonial"
+                onClick={() => setTIndex((tIndex - 1 + testimonials.length) % testimonials.length)}
+                className="rounded-xl border border-white/15 px-4 py-2 hover:bg-white/10"
+              >
+                Prev
+              </button>
+
+              <div className="flex items-center gap-2">
+                {testimonials.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setTIndex(i)}
+                    aria-label={`Go to testimonial ${i + 1}`}
+                    className={`h-2 w-2 rounded-full transition-opacity ${
+                      i === tIndex ? "bg-white opacity-100" : "bg-white/60 opacity-60"
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <button
+                aria-label="Next testimonial"
+                onClick={() => setTIndex((tIndex + 1) % testimonials.length)}
+                className="rounded-xl border border-white/15 px-4 py-2 hover:bg-white/10"
+              >
+                Next
+              </button>
             </div>
-            <div className="text-white/70 mb-4">
-              <strong>{testimonials[tIndex].author}</strong> — {testimonials[tIndex].title}
-            </div>
-            <div className="mt-2 text-center text-sm text-white/70">
+
+            <div className="mt-3 text-center text-sm text-white/60">
               {tIndex + 1} / {testimonials.length}
             </div>
-          </>
-        ) : (
-          <p className="text-white/70 mt-6 text-center">Testimonials coming soon.</p>
-        )}
+          </div>
+        </div>
       </Section>
 
       <Divider />
@@ -576,12 +476,7 @@ export default function App() {
         <div className="grid md:grid-cols-12 gap-6 items-center mt-8">
           <div className="md:col-span-8">
             <div className="mt-6 flex flex-wrap items-center gap-4">
-              <a
-                href="mailto:canyen2019@gmail.com"
-                className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white text-black px-5 py-3 font-semibold shadow-sm hover:shadow-lg transition-shadow"
-              >
-                Get In Touch
-              </a>
+              <CTAButton href="mailto:canyen2019@gmail.com">Get In Touch</CTAButton>
               <a href="mailto:canyen2019@gmail.com" className="underline underline-offset-4">
                 canyen2019@gmail.com
               </a>
@@ -634,7 +529,6 @@ export default function App() {
             <a className="hover:underline" href="#works">Works</a>
             <a className="hover:underline" href="#about">About</a>
             <a className="hover:underline" href="#testimonials">Testimonials</a>
-            <a className="hover:underline" href="#testimonials">Testimonials</a>
             <a className="hover:underline" href="#contact">Contact</a>
           </div>
         </div>
@@ -642,5 +536,6 @@ export default function App() {
     </main>
   );
 }
+
 
            
