@@ -27,6 +27,22 @@ const Section = ({ id, label, children, className = "" }) => (
 const Divider = () => <div className="h-px w-full bg-white/10 my-16" />;
 
 /* -------------------------------------------------------
+   ANIMATION HELPERS
+------------------------------------------------------- */
+const Reveal = ({ children, delay = 0, y = 18 }) => {
+  return (
+    <motion.div
+      initial={{ y, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true, margin: "-20% 0px -20% 0px" }}
+      transition={{ duration: 0.5, delay }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+/* -------------------------------------------------------
    TITLES
 ------------------------------------------------------- */
 const HeroName = ({ text }) => {
@@ -125,6 +141,7 @@ const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
     whileInView={{ y: 0, opacity: 1 }}
     viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
     transition={{ duration: 0.5 }}
+    whileHover={{ y: -4 }}
     className="block rounded-3xl overflow-hidden border border-white/10 bg-white/[.03] hover:bg-white/[.06] transition-colors"
   >
     <div className="aspect-video overflow-hidden">
@@ -215,51 +232,11 @@ export default function App() {
 
   const works = useMemo(
     () => [
-      {
-        tag: "Golf Physics",
-        title: "MyCaddy — Shot Calculator",
-        role: "Design • Dev",
-        year: "2025",
-        url: "https://mycaddy.onrender.com/",
-        img: IMG.mycaddy,
-        alt: "MyCaddy rangefinder logo",
-      },
-      {
-        tag: "Machine Learning",
-        title: "Salifort Motors — Attrition ML",
-        role: "EDA • Modeling",
-        year: "2024",
-        url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning",
-        img: IMG.salifort,
-        alt: "Salifort Attrition project",
-      },
-      {
-        tag: "Healthcare Ops",
-        title: "CGM Billing Analytics",
-        role: "Automation • Python",
-        year: "2025",
-        url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics",
-        img: IMG.cgm,
-        alt: "CGM billing analytics",
-      },
-      {
-        tag: "Real Estate (R)",
-        title: "Ames Housing — Price Modeling",
-        role: "Modeling • Viz",
-        year: "2023",
-        url: "https://github.com/CanyenPalmer/R-Coding---Real-estate-Conditions-Comparrison",
-        img: IMG.realEstate,
-        alt: "Ames housing real estate modeling",
-      },
-      {
-        tag: "Portfolio",
-        title: "Portfolio (This Site)",
-        role: "Design",
-        year: "2025",
-        url: "https://github.com/CanyenPalmer/Java-Portfolio",
-        img: IMG.portfolio,
-        alt: "Palmer Projects blog thumbnail",
-      },
+      { tag: "Golf Physics", title: "MyCaddy — Shot Calculator", role: "Design • Dev", year: "2025", url: "https://mycaddy.onrender.com/", img: IMG.mycaddy, alt: "MyCaddy rangefinder logo" },
+      { tag: "Machine Learning", title: "Salifort Motors — Attrition ML", role: "EDA • Modeling", year: "2024", url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning", img: IMG.salifort, alt: "Salifort Attrition project" },
+      { tag: "Healthcare Ops", title: "CGM Billing Analytics", role: "Automation • Python", year: "2025", url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics", img: IMG.cgm, alt: "CGM billing analytics" },
+      { tag: "Real Estate (R)", title: "Ames Housing — Price Modeling", role: "Modeling • Viz", year: "2023", url: "https://github.com/CanyenPalmer/R-Coding---Real-estate-Conditions-Comparrison", img: IMG.realEstate, alt: "Ames housing real estate modeling" },
+      { tag: "Portfolio", title: "Portfolio (This Site)", role: "Design", year: "2025", url: "https://github.com/CanyenPalmer/Java-Portfolio", img: IMG.portfolio, alt: "Palmer Projects blog thumbnail" },
     ],
     []
   );
@@ -285,9 +262,7 @@ export default function App() {
   // Auto-advance every 6s (disabled if reduced motion)
   useEffect(() => {
     if (prefersReduced) return;
-    const id = setInterval(() => {
-      setTIndex((i) => (i + 1) % testimonials.length);
-    }, 6000);
+    const id = setInterval(() => setTIndex((i) => (i + 1) % testimonials.length), 6000);
     return () => clearInterval(id);
   }, [testimonials.length, prefersReduced]);
 
@@ -529,7 +504,7 @@ export default function App() {
 
       <Divider />
 
-      {/* CONTACT (restored) */}
+      {/* CONTACT */}
       <Section id="contact" label="Contact" className="py-12">
         <SectionTitle text="Connect With Me" />
         <div className="grid md:grid-cols-12 gap-6 items-center mt-8">
@@ -576,7 +551,7 @@ export default function App() {
       </Section>
 
       {/* FOOTER */}
-      <footer className="mt-16 border-top border-white/10 bg-black/30">
+      <footer className="mt-16 border-t border-white/10 bg-black/30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid md:grid-cols-3 gap-6 items-center">
           <div className="text-sm text-white/70">© {new Date().getFullYear()} Canyen Palmer. All rights reserved.</div>
           <div className="text-center text-sm text-white/60">
@@ -595,6 +570,3 @@ export default function App() {
     </main>
   );
 }
-
-
-           
