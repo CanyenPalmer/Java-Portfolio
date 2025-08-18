@@ -17,28 +17,9 @@ const IMG = {
 /* -------------------------------------------------------
    LAYOUT HELPERS
 ------------------------------------------------------- */
-// Layered Section: draws a soft card with slight negative top margin so the previous section peeks through.
-const Section = ({ id, label, children, className = "", layered = false }) => (
-  <section
-    id={id}
-    className={[
-      "relative mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl",
-      layered
-        ? "rounded-3xl border border-white/10 bg-white/[.03] backdrop-blur-sm shadow-xl ring-1 ring-white/5 -mt-10 md:-mt-16 pt-10 md:pt-16"
-        : "",
-      className,
-    ].join(" ")}
-  >
+const Section = ({ id, label, children, className = "" }) => (
+  <section id={id} className={`relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>
     <div className="sr-only"><h2>{label}</h2></div>
-
-    {/* top fade to reveal a hint of the previous section */}
-    {layered && (
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-6 left-0 right-0 h-6 rounded-t-3xl"
-        style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.25))" }}
-      />
-    )}
     {children}
   </section>
 );
@@ -135,7 +116,6 @@ const ServiceCard = ({ index, title, desc, bullets }) => (
   </motion.div>
 );
 
-// Larger, stacked “project” card for a longer scroll
 const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
   <motion.a
     href={url || "#"}
@@ -145,9 +125,9 @@ const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
     whileInView={{ y: 0, opacity: 1 }}
     viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
     transition={{ duration: 0.5 }}
-    className="block rounded-3xl overflow-hidden border border-white/10 bg-white/[.04] hover:bg-white/[.06] transition-colors shadow-2xl"
+    className="block rounded-3xl overflow-hidden border border-white/10 bg-white/[.03] hover:bg-white/[.06] transition-colors"
   >
-    <div className="aspect-[21/9] sm:aspect-[16/7] md:h-[420px] overflow-hidden">
+    <div className="aspect-video overflow-hidden">
       {img ? (
         <img
           src={img}
@@ -162,15 +142,15 @@ const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
         </div>
       )}
     </div>
-    <div className="p-6 md:p-8 border-t border-white/10">
-      <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide mb-3 text-white/70">
+    <div className="p-5 md:p-6 border-t border-white/10">
+      <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide mb-2 text-white/70">
         <Pill>{tag}</Pill>
         <Pill>{year}</Pill>
       </div>
       <div className="flex flex-wrap items-center gap-3">
-        <h4 className="text-2xl md:text-3xl font-semibold">{title}</h4>
+        <h4 className="text-lg md:text-xl font-semibold">{title}</h4>
         <span className="text-white/60">•</span>
-        <p className="text-white/80 text-lg">{role}</p>
+        <p className="text-white/80">{role}</p>
       </div>
     </div>
   </motion.a>
@@ -181,10 +161,27 @@ const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
 ------------------------------------------------------- */
 function LocalTime({ timeZone = "America/Indiana/Indianapolis", label = "Indianapolis" }) {
   const [now, setNow] = useState(new Date());
-  useEffect(() => { const id = setInterval(() => setNow(new Date()), 1000); return () => clearInterval(id); }, []);
-  const time = new Intl.DateTimeFormat("en-US", { timeZone, hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true }).format(now);
-  const tzParts = new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName: "short", hour: "numeric" }).formatToParts(now);
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const time = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  }).format(now);
+
+  const tzParts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    timeZoneName: "short",
+    hour: "numeric",
+  }).formatToParts(now);
   const tzShort = tzParts.find((p) => p.type === "timeZoneName")?.value ?? "";
+
   return <span aria-label={`Local time in ${label}`}>{time} {tzShort}</span>;
 }
 
@@ -218,11 +215,51 @@ export default function App() {
 
   const works = useMemo(
     () => [
-      { tag: "Golf Physics",  title: "MyCaddy — Shot Calculator", role: "Design • Dev", year: "2025", url: "https://mycaddy.onrender.com/", img: IMG.mycaddy,   alt: "MyCaddy rangefinder logo" },
-      { tag: "Machine Learning", title: "Salifort Motors — Attrition ML", role: "EDA • Modeling", year: "2024", url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning", img: IMG.salifort, alt: "Salifort Attrition project" },
-      { tag: "Healthcare Ops", title: "CGM Billing Analytics", role: "Automation • Python", year: "2025", url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics", img: IMG.cgm, alt: "CGM billing analytics" },
-      { tag: "Real Estate (R)", title: "Ames Housing — Price Modeling", role: "Modeling • Viz", year: "2023", url: "https://github.com/CanyenPalmer/R-Coding---Real-estate-Conditions-Comparrison", img: IMG.realEstate, alt: "Ames housing real estate modeling" },
-      { tag: "Portfolio", title: "Portfolio (This Site)", role: "Design", year: "2025", url: "https://github.com/CanyenPalmer/Java-Portfolio", img: IMG.portfolio, alt: "Palmer Projects blog thumbnail" },
+      {
+        tag: "Golf Physics",
+        title: "MyCaddy — Shot Calculator",
+        role: "Design • Dev",
+        year: "2025",
+        url: "https://mycaddy.onrender.com/",
+        img: IMG.mycaddy,
+        alt: "MyCaddy rangefinder logo",
+      },
+      {
+        tag: "Machine Learning",
+        title: "Salifort Motors — Attrition ML",
+        role: "EDA • Modeling",
+        year: "2024",
+        url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning",
+        img: IMG.salifort,
+        alt: "Salifort Attrition project",
+      },
+      {
+        tag: "Healthcare Ops",
+        title: "CGM Billing Analytics",
+        role: "Automation • Python",
+        year: "2025",
+        url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics",
+        img: IMG.cgm,
+        alt: "CGM billing analytics",
+      },
+      {
+        tag: "Real Estate (R)",
+        title: "Ames Housing — Price Modeling",
+        role: "Modeling • Viz",
+        year: "2023",
+        url: "https://github.com/CanyenPalmer/R-Coding---Real-estate-Conditions-Comparrison",
+        img: IMG.realEstate,
+        alt: "Ames housing real estate modeling",
+      },
+      {
+        tag: "Portfolio",
+        title: "Portfolio (This Site)",
+        role: "Design",
+        year: "2025",
+        url: "https://github.com/CanyenPalmer/Java-Portfolio",
+        img: IMG.portfolio,
+        alt: "Palmer Projects blog thumbnail",
+      },
     ],
     []
   );
@@ -230,8 +267,16 @@ export default function App() {
   // Testimonials — ONLY the two you want
   const testimonials = useMemo(
     () => [
-      { quote: "The MyCaddy tool gave us more confidence on the course! Super impressive.", author: "C. Smith", title: "Amateur Golfer" },
-      { quote: "Palmer Projects delivered exactly what we needed — fast, clean, and professional.", author: "G. Waterman", title: "Football Enthusiast" },
+      {
+        quote: "The MyCaddy tool gave us more confidence on the course! Super impressive.",
+        author: "C. Smith",
+        title: "Amateur Golfer",
+      },
+      {
+        quote: "Palmer Projects delivered exactly what we needed — fast, clean, and professional.",
+        author: "G. Waterman",
+        title: "Football Enthusiast",
+      },
     ],
     []
   );
@@ -240,7 +285,9 @@ export default function App() {
   // Auto-advance every 6s (disabled if reduced motion)
   useEffect(() => {
     if (prefersReduced) return;
-    const id = setInterval(() => setTIndex((i) => (i + 1) % testimonials.length), 6000);
+    const id = setInterval(() => {
+      setTIndex((i) => (i + 1) % testimonials.length);
+    }, 6000);
     return () => clearInterval(id);
   }, [testimonials.length, prefersReduced]);
 
@@ -255,11 +302,14 @@ export default function App() {
           animate={{ opacity: 0.35, scale: 1.05 }}
           transition={{ duration: 6, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
           className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-96 w-96 rounded-full blur-3xl"
-          style={{ background: "radial-gradient(closest-side, rgba(255,255,255,0.15), rgba(255,255,255,0.0))" }}
+          style={{
+            background:
+              "radial-gradient(closest-side, rgba(255,255,255,0.15), rgba(255,255,255,0.0))",
+          }}
         />
       )}
 
-      {/* NAV (not layered) */}
+      {/* NAV */}
       <header className="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-black/30 bg-black/20 border-b border-white/10">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
           <a href="#home" className="font-semibold tracking-wide">Canyen Palmer</a>
@@ -286,24 +336,32 @@ export default function App() {
         </div>
       </header>
 
-      {/* HERO (first section not layered to avoid top gap) */}
+      {/* HERO */}
       <Section id="home" label="Hero" className="pt-16 md:pt-24">
         <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-center">
           <div className="md:col-span-7 space-y-6">
             <Pill>Data Scientist</Pill>
+
             <HeroName text="CANYEN PALMER" />
 
+            {/* Multi-line caption */}
             <div className="text-white/85 max-w-2xl space-y-3">
               <p className="text-lg md:text-xl">
                 Data Scientist & Google Certified Data Analyst Professional specializing in statistics,
                 machine learning, predictive modeling, and optimization.
               </p>
-              <p className="text-sm md:text-base"><span className="font-semibold">Proficiency:</span> Python, Excel, Tableau</p>
-              <p className="text-sm md:text-base"><span className="font-semibold">Familiarities:</span> R, Java, SQL, Jes, Power BI, AI</p>
+
+              <p className="text-sm md:text-base">
+                <span className="font-semibold">Proficiency:</span> Python, Excel, Tableau
+              </p>
+              <p className="text-sm md:text-base">
+                <span className="font-semibold">Familiarities:</span> R, Java, SQL, Jes, Power BI, AI
+              </p>
               <p className="text-sm md:text-base">
                 <span className="font-semibold">Tech Stack:</span> Pandas/NumPy, Scipy, seaborn, Matplotlib,
                 statsmodels, Tidyverse, Git, Jupyter, CSV, Quarto(.qmd)
               </p>
+
               <p className="text-sm md:text-base text-white/80">
                 In my spare time, I use machine learning and predictive analysis to refine golf strategy
                 for family and friends. I also optimize data logs from simulator feedback to create yardage
@@ -325,6 +383,7 @@ export default function App() {
             </div>
           </div>
 
+          {/* Floating headshot card */}
           <div className="md:col-span-5">
             <motion.div
               initial={{ y: 0 }}
@@ -332,7 +391,13 @@ export default function App() {
               transition={prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
               className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
             >
-              <img src={IMG.hero} alt="Canyen Palmer headshot" className="w-full h-full object-cover" loading="lazy" decoding="async" />
+              <img
+                src={IMG.hero}
+                alt="Canyen Palmer headshot"
+                className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
             </motion.div>
           </div>
         </div>
@@ -340,30 +405,34 @@ export default function App() {
 
       <Divider />
 
-      {/* SERVICES (layered) */}
-      <Section id="services" label="Services" className="py-6" layered>
+      {/* SERVICES */}
+      <Section id="services" label="Services" className="py-6">
         <div className="mb-8">
           <SectionTitle text="My Services" />
         </div>
         <div className="grid md:grid-cols-3 gap-6">
-          {services.map((s, i) => <ServiceCard key={i} index={i} {...s} />)}
+          {services.map((s, i) => (
+            <ServiceCard key={i} index={i} {...s} />
+          ))}
         </div>
       </Section>
 
       <Divider />
 
-      {/* WORKS (layered & stacked big cards for longer scroll) */}
-      <Section id="works" label="Selected Works" className="py-6" layered>
+      {/* WORKS */}
+      <Section id="works" label="Selected Works" className="py-6">
         <SectionTitle text="Projects" />
-        <div className="mt-8 flex flex-col gap-10">
-          {works.map((w, i) => <WorkCard key={i} {...w} />)}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+          {works.map((w, i) => (
+            <WorkCard key={i} {...w} />
+          ))}
         </div>
       </Section>
 
       <Divider />
 
-      {/* ABOUT (layered) */}
-      <Section id="about" label="About" className="py-6" layered>
+      {/* ABOUT */}
+      <Section id="about" label="About" className="py-6">
         <SectionTitle text="About Me" />
         <div className="grid md:grid-cols-12 gap-8 items-center mt-8">
           <div className="md:col-span-5">
@@ -374,7 +443,13 @@ export default function App() {
               transition={{ duration: 0.5 }}
               className="aspect-square rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
             >
-              <img src="/images/portrait.jpg" alt="Canyen Palmer portrait" className="w-full h-full object-cover" loading="lazy" decoding="async" />
+              <img
+                src="/images/portrait.jpg"
+                alt="Canyen Palmer portrait"
+                className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
             </motion.div>
           </div>
           <div className="md:col-span-7 space-y-4">
@@ -391,8 +466,8 @@ export default function App() {
 
       <Divider />
 
-      {/* TESTIMONIALS (layered) */}
-      <Section id="testimonials" label="Testimonials" className="py-6" layered>
+      {/* TESTIMONIALS (Carousel) */}
+      <Section id="testimonials" label="Testimonials" className="py-6">
         <SectionTitle text="Testimonials" />
         <div className="mt-8 max-w-4xl mx-auto">
           <div className="rounded-3xl border border-white/10 bg-white/[.03] p-6 md:p-10">
@@ -403,7 +478,9 @@ export default function App() {
               exit={{ opacity: 0, x: -30 }}
               transition={{ duration: 0.35 }}
             >
-              <p className="text-xl md:text-2xl leading-relaxed text-center">“{testimonials[tIndex].quote}”</p>
+              <p className="text-xl md:text-2xl leading-relaxed text-center">
+                “{testimonials[tIndex].quote}”
+              </p>
               <div className="mt-6 text-center text-white/80">
                 <strong>{testimonials[tIndex].author}</strong>
                 <span className="opacity-60"> — {testimonials[tIndex].title}</span>
@@ -426,7 +503,9 @@ export default function App() {
                     key={i}
                     onClick={() => setTIndex(i)}
                     aria-label={`Go to testimonial ${i + 1}`}
-                    className={`h-2 w-2 rounded-full transition-opacity ${i === tIndex ? "bg-white opacity-100" : "bg-white/60 opacity-60"}`}
+                    className={`h-2 w-2 rounded-full transition-opacity ${
+                      i === tIndex ? "bg-white opacity-100" : "bg-white/60 opacity-60"
+                    }`}
                   />
                 ))}
               </div>
@@ -450,29 +529,54 @@ export default function App() {
 
       <Divider />
 
-      {/* CONTACT (layered) */}
-      <Section id="contact" label="Contact" className="py-12" layered>
+      {/* CONTACT (restored) */}
+      <Section id="contact" label="Contact" className="py-12">
         <SectionTitle text="Connect With Me" />
         <div className="grid md:grid-cols-12 gap-6 items-center mt-8">
           <div className="md:col-span-8">
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <CTAButton href="mailto:canyen2019@gmail.com">Get In Touch</CTAButton>
-              <a href="mailto:canyen2019@gmail.com" className="underline underline-offset-4">canyen2019@gmail.com</a>
+              <a href="mailto:canyen2019@gmail.com" className="underline underline-offset-4">
+                canyen2019@gmail.com
+              </a>
             </div>
             <p className="mt-4 text-white/70">Working globally • Based in Indiana</p>
           </div>
           <div className="md:col-span-4">
             <div className="rounded-3xl border border-white/10 p-6 space-y-3">
-              <div className="flex items-center gap-3"><Mail className="size-4" /><a href="mailto:canyen2019@gmail.com" className="hover:underline">Email</a></div>
-              <div className="flex items-center gap-3"><Linkedin className="size-4" /><a href="https://www.linkedin.com/in/canyen-palmer-b0b6762a0/" target="_blank" rel="noopener noreferrer" className="hover:underline">LinkedIn</a></div>
-              <div className="flex items-center gap-3"><Github className="size-4" /><a href="https://github.com/CanyenPalmer" target="_blank" rel="noopener noreferrer" className="hover:underline">GitHub</a></div>
+              <div className="flex items-center gap-3">
+                <Mail className="size-4" />
+                <a href="mailto:canyen2019@gmail.com" className="hover:underline">Email</a>
+              </div>
+              <div className="flex items-center gap-3">
+                <Linkedin className="size-4" />
+                <a
+                  href="https://www.linkedin.com/in/canyen-palmer-b0b6762a0/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  LinkedIn
+                </a>
+              </div>
+              <div className="flex items-center gap-3">
+                <Github className="size-4" />
+                <a
+                  href="https://github.com/CanyenPalmer"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  GitHub
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </Section>
 
       {/* FOOTER */}
-      <footer className="mt-16 border-t border-white/10 bg-black/30">
+      <footer className="mt-16 border-top border-white/10 bg-black/30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid md:grid-cols-3 gap-6 items-center">
           <div className="text-sm text-white/70">© {new Date().getFullYear()} Canyen Palmer. All rights reserved.</div>
           <div className="text-center text-sm text-white/60">
@@ -492,3 +596,5 @@ export default function App() {
   );
 }
 
+
+           
