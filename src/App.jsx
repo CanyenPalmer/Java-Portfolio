@@ -1,7 +1,6 @@
-/* Full drop-in replacement for src/App.jsx */
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, PlayCircle, Github, Linkedin, Mail, FileText } from "lucide-react";
+import { ArrowRight, Github, Linkedin, FileText } from "lucide-react";
 
 /* -------------------------------------------------------
    ASSETS
@@ -41,15 +40,15 @@ const Reveal = ({
   const prefersReduced = useReducedMotion();
 
   if (prefersReduced) {
-    return <div style={ opacity: 1, transform: "none" }>{children}</div>;
+    return <div style={{ opacity: 1, transform: "none" }}>{children}</div>;
   }
 
   return (
     <Tag
-      initial={ y, opacity: 0 }
-      whileInView={ y: 0, opacity: 1 }
-      viewport={ once, amount: threshold, margin: "-20% 0px -20% 0px" }
-      transition={ duration, delay, ease: "easeOut" }
+      initial={{ y, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once, amount: threshold, margin: "-20% 0px -20% 0px" }}
+      transition={{ duration, delay, ease: "easeOut" }}
     >
       {children}
     </Tag>
@@ -60,16 +59,16 @@ const RevealGroup = ({ children, delay = 0, stagger = 0.12 }) => (
   <motion.div
     initial="hidden"
     whileInView="show"
-    viewport={ once: true, amount: 0.25 }
-    variants={
+    viewport={{ once: true, amount: 0.25 }}
+    variants={{
       hidden: {},
       show: { transition: { staggerChildren: stagger, delayChildren: delay } },
-    }
+    }}
   >
     {React.Children.map(children, (child) => (
       <motion.div
-        variants={ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }
-        transition={ duration: 0.5, ease: "easeOut" }
+        variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
       >
         {child}
       </motion.div>
@@ -87,19 +86,19 @@ const HeroName = ({ text }) => {
   return (
     <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center">
       <motion.span
-        initial={ y: 20, opacity: 0 }
-        whileInView={ y: 0, opacity: 1 }
-        transition={ delay: 0.0, type: "spring", stiffness: 120 }
-        viewport={ once: true }
+        initial={{ y: 20, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.0, type: "spring", stiffness: 120 }}
+        viewport={{ once: true }}
         className="block tracking-[.2em] md:tracking-[.28em] mb-2"
       >
         {first}
       </motion.span>
       <motion.span
-        initial={ y: 24, opacity: 0 }
-        whileInView={ y: 0, opacity: 1 }
-        transition={ delay: 0.12, type: "spring", stiffness: 120 }
-        viewport={ once: true }
+        initial={{ y: 24, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.12, type: "spring", stiffness: 120 }}
+        viewport={{ once: true }}
         className="block tracking-[.2em] md:tracking-[.28em]"
       >
         {last}
@@ -110,10 +109,10 @@ const HeroName = ({ text }) => {
 
 const SectionTitle = ({ text }) => (
   <motion.h2
-    initial={ y: 18, opacity: 0 }
-    whileInView={ y: 0, opacity: 1 }
-    viewport={ once: true, margin: "-20% 0px -20% 0px" }
-    transition={ duration: 0.5 }
+    initial={{ y: 18, opacity: 0 }}
+    whileInView={{ y: 0, opacity: 1 }}
+    viewport={{ once: true, margin: "-20% 0px -20% 0px" }}
+    transition={{ duration: 0.5 }}
     className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase text-center"
   >
     {text}
@@ -129,8 +128,8 @@ const Pill = ({ children }) => (
 const CTAButton = ({ href, children }) => (
   <motion.a
     href={href}
-    whileHover={ scale: 1.03 }
-    whileTap={ scale: 0.98 }
+    whileHover={{ scale: 1.03 }}
+    whileTap={{ scale: 0.98 }}
     className="inline-flex items-center gap-2 rounded-xl bg-white text-black px-4 py-2 font-semibold shadow-sm hover:shadow-md transition-shadow"
   >
     {children} <ArrowRight className="size-4" />
@@ -160,10 +159,10 @@ const Clock = () => {
 ------------------------------------------------------- */
 const ServiceCard = ({ index, title, desc, bullets }) => (
   <motion.div
-    initial={ y: 20, opacity: 0 }
-    whileInView={ y: 0, opacity: 1 }
-    viewport={ once: true, margin: "-10% 0px -10% 0px" }
-    transition={ duration: 0.5, delay: index * 0.08 }
+    initial={{ y: 20, opacity: 0 }}
+    whileInView={{ y: 0, opacity: 1 }}
+    viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
+    transition={{ duration: 0.5, delay: index * 0.08 }}
     className="group rounded-3xl border border-white/10 bg-white/[.03] p-6 md:p-8 hover:bg-white/[.06] transition-colors"
   >
     <div className="flex items-start justify-between mb-6">
@@ -180,17 +179,40 @@ const ServiceCard = ({ index, title, desc, bullets }) => (
   </motion.div>
 );
 
-$1
+const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
+  <motion.a
+    href={url}
+    target="_blank"
+    rel="noopener noreferrer"
+    initial={{ y: 20, opacity: 0 }}
+    whileInView={{ y: 0, opacity: 1 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.5 }}
+    className="block rounded-3xl overflow-hidden border border-white/10 bg-white/[.03] hover:bg-white/[.06]"
+  >
+    <div className="aspect-video overflow-hidden">
+      <img src={img} alt={alt} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+    </div>
+    <div className="p-5 flex items-center justify-between">
+      <div>
+        <Pill>{tag}</Pill>
+        <h3 className="text-lg md:text-xl font-semibold mt-2">{title}</h3>
+        <p className="text-sm text-white/70">{role}</p>
+      </div>
+      <span className="text-sm text-white/60">{year}</span>
+    </div>
+  </motion.a>
+);
 
 /* -------------------------------------------------------
    Testimonial Card
 ------------------------------------------------------- */
 const TestimonialCard = ({ quote, name, role, avatar }) => (
   <motion.figure
-    initial={ y: 20, opacity: 0 }
-    whileInView={ y: 0, opacity: 1 }
-    viewport={ once: true }
-    transition={ duration: 0.5 }
+    initial={{ y: 20, opacity: 0 }}
+    whileInView={{ y: 0, opacity: 1 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.5 }}
     className="rounded-3xl border border-white/10 bg-white/[.03] p-6 md:p-8"
   >
     <blockquote className="text-white/85 leading-relaxed">“{quote}”</blockquote>
@@ -236,26 +258,29 @@ export default function App() {
     []
   );
 
-  $1
+  const works = useMemo(
+    () => [
+      { tag: "Golf Physics", title: "MyCaddy — Shot Calculator", role: "Rangefinder • Physics", year: "2024", url: "https://github.com/CanyenPalmer/CanyenPalmer.github.io", img: IMG.mycaddy, alt: "MyCaddy rangefinder logo" },
+      { tag: "Machine Learning", title: "Salifort Motors — Attrition", role: "Classification • ML", year: "2024", url: "https://github.com/CanyenPalmer/ML_EmployeeAttrition", img: IMG.salifort, alt: "Salifort Attrition project" },
+      { tag: "Healthcare Ops", title: "CGM Billing Analytics", role: "EDA • Forecasting", year: "2024", url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics", img: IMG.cgm, alt: "CGM billing analytics" },
+      { tag: "Real Estate (R)", title: "Ames Housing — Price Modeling", role: "Regression • R", year: "2024", url: "https://github.com/CanyenPalmer/ames-housing", img: IMG.realEstate, alt: "Ames housing real estate modeling" },
+      { tag: "Portfolio", title: "Portfolio (This Site)", role: "UI • Vite • Tailwind", year: "2025", url: "https://github.com/CanyenPalmer/Java-Portfolio-main", img: IMG.portfolio, alt: "Portfolio preview" },
+    ],
+    []
+  );
 
   const testimonials = useMemo(
     () => [
       {
-        quote: "Canyen delivered a clean, fast dashboard our team actually uses every day.",
-        name: "Alex M.",
-        role: "Operations Lead",
+        quote: "The MyCaddy tool gave us more confidence on the course! Super impressive.",
+        name: "C. Smith",
+        role: "Amateur Golfer",
         avatar: "",
       },
       {
-        quote: "Clear communication, thoughtful modeling, and measurable impact.",
-        name: "Priya S.",
-        role: "Head of Analytics",
-        avatar: "",
-      },
-      {
-        quote: "Automations saved us hours weekly — huge quality of life improvement.",
-        name: "Jordan R.",
-        role: "Finance Manager",
+        quote: "Palmer Projects delivered exactly what we needed — fast, clean, and professional.",
+        name: "G. Waterman",
+        role: "Sports Enthusiast",
         avatar: "",
       },
     ],
@@ -273,8 +298,8 @@ export default function App() {
             href="https://github.com/CanyenPalmer"
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={ scale: 1.03 }
-            whileTap={ scale: 0.98 }
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.98 }}
             className="inline-flex items-center gap-1 rounded-xl border border-white/15 px-3 py-2 text-sm hover:bg-white/10"
           >
             <Github className="size-4" /> GitHub
@@ -283,8 +308,8 @@ export default function App() {
             href="/Canyen_Palmer_Resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={ scale: 1.03 }
-            whileTap={ scale: 0.98 }
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.98 }}
             className="inline-flex items-center gap-1 rounded-xl border border-white/15 px-3 py-2 text-sm hover:bg-white/10"
           >
             <FileText className="size-4" /> Resume
@@ -298,174 +323,189 @@ export default function App() {
         <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-center">
           <div className="md:col-span-7 space-y-6">
             <RevealGroup delay={0.1} stagger={0.14}>
-            <Pill>Data Scientist</Pill>
+              <Pill>Data Scientist</Pill>
 
-            <HeroName text="CANYEN PALMER" />
+              <HeroName text="CANYEN PALMER" />
 
-            {/* Multi-line caption */}
-            <div className="text-white/85 max-w-2xl space-y-3">
-              <p className="text-lg md:text-xl">
-                Data Scientist & Google Certified Data Analyst Professional specializing in statistics,
-                machine learning, predictive modeling, and optimization.
-              </p>
+              {/* Multi-line caption */}
+              <div className="text-white/85 max-w-2xl space-y-3">
+                <p className="text-lg md:text-xl">
+                  Data Scientist & Google Certified Data Analyst Professional specializing in statistics,
+                  machine learning, predictive modeling, and optimization.
+                </p>
 
-              <p className="text-sm md:text-base">
-                <span className="font-semibold">Proficiency:</span> Python, Excel, Tableau
-              </p>
-              <p className="text-sm md:text-base">
-                <span className="font-semibold">Familiarities:</span> R, Java, SQL, Jes, Power BI, AI
-              </p>
-              <p className="text-sm md:text-base">
-                <span className="font-semibold">Tech Stack:</span> Pandas/NumPy, Scipy, seaborn, Matplotlib,
-                statsmodels, Tidyverse, Git, Jupyter, CSV, Quarto(.qmd)
-              </p>
+                <p className="text-sm md:text-base">
+                  <span className="font-semibold">Proficiency:</span> Python, Excel, Tableau
+                </p>
+                <p className="text-sm md:text-base">
+                  <span className="font-semibold">Familiarities:</span> R, Java, SQL, Jes, Power BI, AI
+                </p>
+                <p className="text-sm md:text-base">
+                  <span className="font-semibold">Tech Stack:</span> Pandas/NumPy, Scipy, seaborn, Matplotlib,
+                  statsmodels, Tidyverse, Git, Jupyter, CSV, Quarto(.qmd)
+                </p>
 
-              <p className="text-sm md:text-base text-white/80">
-                In my spare time, I use machine learning and predictive analysis to refine golf strategy
-                for family and friends. I also optimize data logs from simulator feedback to create yardage
-                books for various golf courses!
-              </p>
-            </div>
+                <p className="text-sm md:text-base text-white/80">
+                  In my spare time, I use machine learning and predictive analysis to refine golf strategy
+                  for family and friends. I also optimize data logs from simulator feedback to create yardage
+                  books for various golf courses!
+                </p>
+              </div>
 
-            <div className="flex items-center gap-4">
-              <CTAButton href="#contact">Let's Connect</CTAButton>
-              <motion.a whileHover={ opacity: 0.85 } href="#works" className="underline underline-offset-4">
-                See my work
-              </motion.a>
-            </div>
+              <div className="flex items-center gap-4">
+                <CTAButton href="#contact">Let's Connect</CTAButton>
+                <motion.a whileHover={{ opacity: 0.85 }} href="#works" className="underline underline-offset-4">
+                  See my work
+                </motion.a>
+              </div>
 
-            <div className="flex items-center gap-3 pt-2 text-sm text-white/70">
-              <span>Available for select collaborations</span>
-              <span className="opacity-50">•</span>
-              <span>Open to proposals</span>
-            </div>
+              <div className="flex items-center gap-3 pt-2 text-sm text-white/70">
+                <span>Available for select collaborations</span>
+                <span className="opacity-50">•</span>
+                <span>Open to proposals</span>
+              </div>
             </RevealGroup>
           </div>
 
           {/* Floating headshot card */}
           <div className="md:col-span-5">
             <Reveal y={12}>
-            <motion.div
-              initial={ y: 0 }
-              animate={prefersReduced ? {} : { y: [0, -8, 0] }
-              transition={prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }
-              className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
-            >
-              <img
-                src={IMG.hero}
-                alt="Canyen Palmer headshot"
-                className="w-full h-full object-cover"
-                loading="lazy"
-                decoding="async"
-              />
-            </motion.div>
+              <motion.div
+                initial={{ y: 0 }}
+                animate={prefersReduced ? {} : { y: [0, -8, 0] }}
+                transition={prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
+              >
+                <img
+                  src={IMG.hero}
+                  alt="Canyen Palmer headshot"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </motion.div>
             </Reveal>
           </div>
         </div>
       </Section>
 
       {/* ABOUT */}
-<Divider />
-<Section id="about" label="About" className="py-8 md:py-12">
-  <div className="max-w-3xl mx-auto">
-    <Reveal>
-      <SectionTitle text="About" />
-    </Reveal>
-    <div className="mt-6 space-y-4 text-white/85 leading-relaxed">
-      <Reveal>
-        <p>
-          I’m a data‑driven problem solver who cares about clarity and outcomes. My toolkit spans
-          statistics, machine learning, and automation — always focused on shipping tools people actually use.
-        </p>
-      </Reveal>
-      <Reveal delay={0.08}>
-        <p>
-          Recently I’ve been building small web apps for operations teams, automating spreadsheet and PDF
-          workflows, and prototyping models that demonstrate value quickly.
-        </p>
-      </Reveal>
-      <Reveal delay={0.16}>
-        <p>
-          Outside of work, I apply analytics to golf strategy for my circle — turning simulator feedback into
-          practical yardage books and course‑management insights.
-        </p>
-      </Reveal>
-    </div>
-  </div>
-</Section>
-
-{/* SERVICES */}
-<Divider />
-<Section id="services" label="Services" className="py-8 md:py-12">
-  <Reveal>
-    <SectionTitle text="Services" />
-  </Reveal>
-  <div className="mt-8 grid md:grid-cols-3 gap-6 md:gap-8">
-    {services.map((s, i) => (
-      <ServiceCard key={i} index={i} title={s.title} desc={s.desc} bullets={s.bullets} />
-    ))}
-  </div>
-</Section>
-
-{/* WORK / PROJECTS */}
-<Divider />
-<Section id="works" label="Selected Work" className="py-8 md:py-12">
-  <Reveal>
-    <SectionTitle text="Selected Work" />
-  </Reveal>
-  <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-    {works.map((w, i) => (
-      <WorkCard key={i} tag={w.tag} title={w.title} role={w.role} year={w.year} url={w.url} img={w.img} alt={w.alt} />
-    ))}
-  </div>
-</Section>
-
-{/* TESTIMONIALS */}
-<Divider />
-<Section id="testimonials" label="Testimonials" className="py-8 md:py-12">
-  <Reveal>
-    <SectionTitle text="What Clients Say" />
-  </Reveal>
-  <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-    {testimonials.map((t, i) => (
-      <TestimonialCard key={i} quote={t.quote} name={t.name} role={t.role} avatar={t.avatar} />
-    ))}
-  </div>
-</Section>
-
-{/* CONTACT */}
-<Divider />
-<Section id="contact" label="Contact" className="py-8 md:py-12">
-  <div className="max-w-2xl mx-auto text-center min-h-[45vh] flex flex-col">
-    <Reveal>
-      <SectionTitle text="Let’s Connect" />
-    </Reveal>
-    <Reveal delay={0.08}>
-      <p className="mt-4 text-white/80">
-        Have a project or idea you’d like to explore? I’m open to select collaborations.
-      </p>
-    </Reveal>
-    {/* Buttons anchored to the bottom of this section box */}
-    <div className="mt-auto pt-8">
-      <Reveal delay={0.16}>
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <CTAButton href="mailto:canyen@example.com">Email Me</CTAButton>
-          <motion.a href="https://www.linkedin.com/in/canyenpalmer/" target="_blank" rel="noopener noreferrer" whileHover={ scale: 1.03 } whileTap={ scale: 0.98 } className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2">
-            <Linkedin className="size-4" /> LinkedIn
-          </motion.a>
-          <motion.a href="https://github.com/CanyenPalmer" target="_blank" rel="noopener noreferrer" whileHover={ scale: 1.03 } whileTap={ scale: 0.98 } className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2">
-            <Github className="size-4" /> GitHub
-          </motion.a>
+      <Divider />
+      <Section id="about" label="About" className="py-8 md:py-12">
+        <div className="max-w-3xl mx-auto">
+          <Reveal>
+            <SectionTitle text="About" />
+          </Reveal>
+          <div className="mt-6 space-y-4 text-white/85 leading-relaxed">
+            <Reveal>
+              <p>
+                I’m a data-driven problem solver who cares about clarity and outcomes. My toolkit spans
+                statistics, machine learning, and automation — always focused on shipping tools people actually use.
+              </p>
+            </Reveal>
+            <Reveal delay={0.08}>
+              <p>
+                Recently I’ve been building small web apps for operations teams, automating spreadsheet and PDF
+                workflows, and prototyping models that demonstrate value quickly.
+              </p>
+            </Reveal>
+            <Reveal delay={0.16}>
+              <p>
+                Outside of work, I apply analytics to golf strategy for my circle — turning simulator feedback into
+                practical yardage books and course-management insights.
+              </p>
+            </Reveal>
+          </div>
         </div>
-      </Reveal>
-    </div>
-  </div>
-</Section>
+      </Section>
 
-{/* FOOTER */}
+      {/* SERVICES */}
+      <Divider />
+      <Section id="services" label="Services" className="py-8 md:py-12">
+        <Reveal>
+          <SectionTitle text="Services" />
+        </Reveal>
+        <div className="mt-8 grid md:grid-cols-3 gap-6 md:gap-8">
+          {services.map((s, i) => (
+            <ServiceCard key={i} index={i} title={s.title} desc={s.desc} bullets={s.bullets} />
+          ))}
+        </div>
+      </Section>
+
+      {/* WORK / PROJECTS */}
+      <Divider />
+      <Section id="works" label="Selected Work" className="py-8 md:py-12">
+        <Reveal>
+          <SectionTitle text="Selected Work" />
+        </Reveal>
+        <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {works.map((w, i) => (
+            <WorkCard key={i} tag={w.tag} title={w.title} role={w.role} year={w.year} url={w.url} img={w.img} alt={w.alt} />
+          ))}
+        </div>
+      </Section>
+
+      {/* TESTIMONIALS */}
+      <Divider />
+      <Section id="testimonials" label="Testimonials" className="py-8 md:py-12">
+        <Reveal>
+          <SectionTitle text="What Clients Say" />
+        </Reveal>
+        <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {testimonials.map((t, i) => (
+            <TestimonialCard key={i} quote={t.quote} name={t.name} role={t.role} avatar={t.avatar} />
+          ))}
+        </div>
+      </Section>
+
+      {/* CONTACT */}
+      <Divider />
+      <Section id="contact" label="Contact" className="py-8 md:py-12">
+        <div className="max-w-2xl mx-auto text-center min-h-[45vh] flex flex-col">
+          <Reveal>
+            <SectionTitle text="Let’s Connect" />
+          </Reveal>
+          <Reveal delay={0.08}>
+            <p className="mt-4 text-white/80">
+              Have a project or idea you’d like to explore? I’m open to select collaborations.
+            </p>
+          </Reveal>
+          {/* Buttons anchored to the bottom of this section box */}
+          <div className="mt-auto pt-8">
+            <Reveal delay={0.16}>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <CTAButton href="mailto:canyen@example.com">Email Me</CTAButton>
+                <motion.a
+                  href="https://www.linkedin.com/in/canyenpalmer/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2"
+                >
+                  <Linkedin className="size-4" /> LinkedIn
+                </motion.a>
+                <motion.a
+                  href="https://github.com/CanyenPalmer"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2"
+                >
+                  <Github className="size-4" /> GitHub
+                </motion.a>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </Section>
+
+      {/* FOOTER */}
       <footer className="container mx-auto px-4 py-10 text-center text-white/60">
         <div>© {new Date().getFullYear()} Canyen Palmer</div>
       </footer>
     </main>
   );
 }
+
