@@ -1,3 +1,4 @@
+/* Full drop-in replacement for src/App.jsx — all sections included */
 import React, { useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Github, Linkedin, FileText } from "lucide-react";
@@ -458,7 +459,7 @@ export default function App() {
         </div>
       </Section>
 
-      {{/* CONTACT */}
+      {/* CONTACT */}
 <Divider />
 <Section id="contact" label="Contact" className="py-12">
   <div className="max-w-2xl mx-auto text-center">
