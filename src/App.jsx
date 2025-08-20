@@ -297,7 +297,7 @@ export default function App() {
           </nav>
           <div className="flex gap-3">
             <motion.a
-              href="https://2d7974f8-5fa5-4136-aaa2-354b07c4877e.filesusr.com/ugd/a966b5_24da15b6428845468f28168d8f7d0569.pdf"
+              href="https://2d7974f8-5fa5-4136-aaa2-354b07c4877e.filesusr.com/ugd/a966b5_f4890026c5b444fa945767c74232e285.pdf"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.03 }}
