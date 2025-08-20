@@ -138,6 +138,24 @@ const CTAButton = ({ href, children }) => (
 );
 
 /* -------------------------------------------------------
+   UTILITIES — LIVE CLOCK
+------------------------------------------------------- */
+const Clock = () => {
+  const [time, setTime] = React.useState(new Date());
+
+  React.useEffect(() => {
+    const t = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <span className="font-mono text-xs md:text-sm opacity-80 tabular-nums">
+      {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+    </span>
+  );
+};
+
+/* -------------------------------------------------------
    CARDS
 ------------------------------------------------------- */
 const ServiceCard = ({ index, title, desc, bullets }) => (
@@ -232,6 +250,7 @@ export default function App() {
       <header className="container mx-auto px-4 py-5 flex items-center justify-between">
         <a href="#home" className="text-sm tracking-widest opacity-90 hover:opacity-100 transition">CANYEN PALMER</a>
         <div className="flex items-center gap-3">
+          <Clock />
           <motion.a
             href="https://github.com/CanyenPalmer"
             target="_blank"
