@@ -361,21 +361,32 @@ export default function App() {
           {/* Floating headshot card */}
           <div className="md:col-span-5">
             <motion.div
-              initial={{ y: 0 }}
-              animate={prefersReduced ? {} : { y: [0, -8, 0] }}
-              transition={prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
+              initial={{ y: 0, opacity: 0, scale: 0.9 }}
+              animate={
+                prefersReduced
+                  ? {}
+                  : { y: [0, -8, 0], opacity: 1, scale: 1 }
+              }
+              transition={
+                prefersReduced
+                  ? {}
+                  : { duration: 6, repeat: Infinity, ease: "easeInOut" }
+              }
+              className="flex items-center justify-center"
             >
-              <img
+              <motion.img
                 src={IMG.hero}
                 alt="Canyen Palmer headshot"
-                className="w-full h-full object-cover"
+                className="w-48 h-48 rounded-full object-cover shadow-lg"
                 loading="lazy"
                 decoding="async"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
               />
             </motion.div>
           </div>
-        </div>
+         </div>
       </Section>
 
       <Divider />
