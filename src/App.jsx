@@ -206,9 +206,9 @@ const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
 );
 
 /* -------------------------------------------------------
-   Testimonial Card
+   Testimonial Card (no avatar)
 ------------------------------------------------------- */
-const TestimonialCard = ({ quote, name, role, avatar }) => (
+const TestimonialCard = ({ quote, name, role }) => (
   <motion.figure
     initial={{ y: 20, opacity: 0 }}
     whileInView={{ y: 0, opacity: 1 }}
@@ -217,16 +217,9 @@ const TestimonialCard = ({ quote, name, role, avatar }) => (
     className="rounded-3xl border border-white/10 bg-white/[.03] p-6 md:p-8"
   >
     <blockquote className="text-white/85 leading-relaxed">“{quote}”</blockquote>
-    <figcaption className="mt-5 flex items-center gap-3">
-      {avatar ? (
-        <img src={avatar} alt={name} className="size-9 rounded-full object-cover" loading="lazy" />
-      ) : (
-        <div className="size-9 rounded-full bg-white/10" />
-      )}
-      <div>
-        <div className="font-medium">{name}</div>
-        {role && <div className="text-sm text-white/60">{role}</div>}
-      </div>
+    <figcaption className="mt-5">
+      <div className="font-medium">{name}</div>
+      {role && <div className="text-sm text-white/60">{role}</div>}
     </figcaption>
   </motion.figure>
 );
@@ -270,23 +263,22 @@ export default function App() {
     []
   );
 
+  // Keep only the two testimonials; avatar not used by TestimonialCard
   const testimonials = useMemo(
-  () => [
-    {
-      quote: "The MyCaddy tool gave us more confidence on the course! Super impressive.",
-      name: "C. Smith",
-      role: "Amateur Golfer",
-      avatar: "",
-    },
-    {
-      quote: "Palmer Projects delivered exactly what we needed — fast, clean, and professional.",
-      name: "G. Waterman",
-      role: "Sports Enthusiast",
-      avatar: "",
-    },
-  ],
-  []
-);
+    () => [
+      {
+        quote: "The MyCaddy tool gave us more confidence on the course! Super impressive.",
+        name: "C. Smith",
+        role: "Amateur Golfer",
+      },
+      {
+        quote: "Palmer Projects delivered exactly what we needed — fast, clean, and professional.",
+        name: "G. Waterman",
+        role: "Sports Enthusiast",
+      },
+    ],
+    []
+  );
 
   /* Header */
   return (
@@ -450,53 +442,53 @@ export default function App() {
       <Divider />
       <Section id="testimonials" label="Testimonials" className="py-8 md:py-12">
         <Reveal>
-          <SectionTitle text="What Clients Say" />
+          <SectionTitle text="Testimonials" />
         </Reveal>
-        <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="mt-8 grid md:grid-cols-2 gap-6 md:gap-8">
           {testimonials.map((t, i) => (
-            <TestimonialCard key={i} quote={t.quote} name={t.name} role={t.role} avatar={t.avatar} />
+            <TestimonialCard key={i} quote={t.quote} name={t.name} role={t.role} />
           ))}
         </div>
       </Section>
 
       {/* CONTACT */}
-<Divider />
-<Section id="contact" label="Contact" className="py-12">
-  <div className="max-w-2xl mx-auto text-center">
-    <Reveal>
-      <SectionTitle text="Let’s Connect" />
-    </Reveal>
-    <Reveal delay={0.08}>
-      <p className="mt-4 text-white/80">
-        Have a project or idea you’d like to explore? I’m open to select collaborations.
-      </p>
-    </Reveal>
-    {/* BUTTON ROW — always visible (no Reveal wrapper) */}
-    <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-      <CTAButton href="mailto:canyen2019@gmil.com">Email Me</CTAButton>
-      <motion.a
-        href="https://www.linkedin.com/in/canyen-palmer-b0b6762a0/"
-        target="_blank"
-        rel="noopener noreferrer"
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.98 }}
-        className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2"
-      >
-        <Linkedin className="size-4" /> LinkedIn
-      </motion.a>
-      <motion.a
-        href="https://github.com/CanyenPalmer"
-        target="_blank"
-        rel="noopener noreferrer"
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.98 }}
-        className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2"
-      >
-        <Github className="size-4" /> GitHub
-      </motion.a>
-    </div>
-  </div>
-</Section>
+      <Divider />
+      <Section id="contact" label="Contact" className="py-12">
+        <div className="max-w-2xl mx-auto text-center">
+          <Reveal>
+            <SectionTitle text="Let’s Connect" />
+          </Reveal>
+          <Reveal delay={0.08}>
+            <p className="mt-4 text-white/80">
+              Have a project or idea you’d like to explore? I’m open to select collaborations.
+            </p>
+          </Reveal>
+          {/* BUTTON ROW — always visible (no Reveal wrapper) */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <CTAButton href="mailto:canyen2019@gmil.com">Email Me</CTAButton>
+            <motion.a
+              href="https://www.linkedin.com/in/canyen-palmer-b0b6762a0/"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2"
+            >
+              <Linkedin className="size-4" /> LinkedIn
+            </motion.a>
+            <motion.a
+              href="https://github.com/CanyenPalmer"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2"
+            >
+              <Github className="size-4" /> GitHub
+            </motion.a>
+          </div>
+        </div>
+      </Section>
 
       {/* FOOTER */}
       <footer className="container mx-auto px-4 py-10 text-center text-white/60">
@@ -505,4 +497,3 @@ export default function App() {
     </main>
   );
 }
-
