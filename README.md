@@ -41,7 +41,7 @@ Deployed seamlessly with [Vercel](https://vercel.com).
 
 ## 📖 Overview
 
-The Palmer Portfolio is a **lightweight, modern, and mobile-optimized** personal website that highlights both technical and professional achievements. It combines **clean UI design** with **interactive elements** to stand out from template-based portfolios.  
+My Portfolio is a **lightweight, modern, and mobile-optimized** personal website that highlights both technical and professional achievements. It combines **clean UI design** with **interactive elements** to stand out from template-based portfolios.  
 
 Key sections include:  
 
