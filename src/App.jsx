@@ -366,7 +366,7 @@ export default function App() {
               <motion.div
                 initial={{ y: 0 }}
                 animate={prefersReduced ? {} : { y: [0, -8, 0] }}
-                transition={prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ prefersReduced } ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
               >
                 <img
@@ -496,28 +496,8 @@ export default function App() {
         <Reveal>
           <SectionTitle text="Links" />
         </Reveal>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <CTAButton href="mailto:canyen2019@gmil.com">Email Me</CTAButton>
-          <motion.a
-            href="https://www.linkedin.com/in/canyen-palmer-b0b6762a0/"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2"
-          >
-            <Linkedin className="size-4" /> LinkedIn
-          </motion.a>
-          <motion.a
-            href="https://github.com/CanyenPalmer"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2"
-          >
-            <Github className="size-4" /> GitHub
-          </motion.a>
+        <div className="mt-6 text-center text-white/60">
+          © {new Date().getFullYear()} Canyen Palmer
         </div>
       </Section>
     </main>
