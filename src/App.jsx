@@ -492,7 +492,7 @@ export default function App() {
 
       {/* FOOTER */}
       <footer className="container mx-auto px-4 py-10 text-center text-white/60">
-        <div>© {new Date().getFullYear()} Canyen Palmer</div>
+        <div className="text-lg font-semibold text-white/80">Links</div>
       </footer>
     </main>
   );
