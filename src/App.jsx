@@ -180,29 +180,32 @@ const ServiceCard = ({ index, title, desc, bullets }) => (
   </motion.div>
 );
 
-const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
-  <motion.a
-    href={url}
-    target="_blank"
-    rel="noopener noreferrer"
+$1
+
+/* -------------------------------------------------------
+   Testimonial Card
+------------------------------------------------------- */
+const TestimonialCard = ({ quote, name, role, avatar }) => (
+  <motion.figure
     initial={{ y: 20, opacity: 0 }}
     whileInView={{ y: 0, opacity: 1 }}
     viewport={{ once: true }}
     transition={{ duration: 0.5 }}
-    className="block rounded-3xl overflow-hidden border border-white/10 bg-white/[.03] hover:bg-white/[.06]"
+    className="rounded-3xl border border-white/10 bg-white/[.03] p-6 md:p-8"
   >
-    <div className="aspect-video overflow-hidden">
-      <img src={img} alt={alt} className="w-full h-full object-cover" loading="lazy" decoding="async" />
-    </div>
-    <div className="p-5 flex items-center justify-between">
+    <blockquote className="text-white/85 leading-relaxed">“{quote}”</blockquote>
+    <figcaption className="mt-5 flex items-center gap-3">
+      {avatar ? (
+        <img src={avatar} alt={name} className="size-9 rounded-full object-cover" loading="lazy" />
+      ) : (
+        <div className="size-9 rounded-full bg-white/10" />
+      )}
       <div>
-        <Pill>{tag}</Pill>
-        <h3 className="text-lg md:text-xl font-semibold mt-2">{title}</h3>
-        <p className="text-sm text-white/70">{role}</p>
+        <div className="font-medium">{name}</div>
+        {role && <div className="text-sm text-white/60">{role}</div>}
       </div>
-      <span className="text-sm text-white/60">{year}</span>
-    </div>
-  </motion.a>
+    </figcaption>
+  </motion.figure>
 );
 
 /* -------------------------------------------------------
@@ -233,13 +236,28 @@ export default function App() {
     []
   );
 
-  const works = useMemo(
+  $1
+
+  const testimonials = useMemo(
     () => [
-      { tag: "Golf Physics", title: "MyCaddy — Shot Calculator", role: "Rangefinder • Physics", year: "2024", url: "https://github.com/CanyenPalmer/CanyenPalmer.github.io", img: IMG.mycaddy, alt: "MyCaddy rangefinder logo" },
-      { tag: "Machine Learning", title: "Salifort Motors — Attrition", role: "Classification • ML", year: "2024", url: "https://github.com/CanyenPalmer/ML_EmployeeAttrition", img: IMG.salifort, alt: "Salifort Attrition project" },
-      { tag: "Healthcare Ops", title: "CGM Billing Analytics", role: "EDA • Forecasting", year: "2024", url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics", img: IMG.cgm, alt: "CGM billing analytics" },
-      { tag: "Real Estate (R)", title: "Ames Housing — Price Modeling", role: "Regression • R", year: "2024", url: "https://github.com/CanyenPalmer/ames-housing", img: IMG.realEstate, alt: "Ames housing real estate modeling" },
-      { tag: "Portfolio", title: "Portfolio (This Site)", role: "UI • Vite • Tailwind", year: "2025", url: "https://github.com/CanyenPalmer/Java-Portfolio-main", img: IMG.portfolio, alt: "Portfolio preview" },
+      {
+        quote: "Canyen delivered a clean, fast dashboard our team actually uses every day.",
+        name: "Alex M.",
+        role: "Operations Lead",
+        avatar: "",
+      },
+      {
+        quote: "Clear communication, thoughtful modeling, and measurable impact.",
+        name: "Priya S.",
+        role: "Head of Analytics",
+        avatar: "",
+      },
+      {
+        quote: "Automations saved us hours weekly — huge quality of life improvement.",
+        name: "Jordan R.",
+        role: "Finance Manager",
+        avatar: "",
+      },
     ],
     []
   );
@@ -389,7 +407,7 @@ export default function App() {
   </div>
 </Section>
 
-{/* WORK / PROJECTS */}
+{{/* WORK / PROJECTS */}
 <Divider />
 <Section id="works" label="Selected Work" className="py-8 md:py-12">
   <Reveal>
@@ -402,10 +420,23 @@ export default function App() {
   </div>
 </Section>
 
-{/* CONTACT */}
+{/* TESTIMONIALS */}
+<Divider />
+<Section id="testimonials" label="Testimonials" className="py-8 md:py-12">
+  <Reveal>
+    <SectionTitle text="What Clients Say" />
+  </Reveal>
+  <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+    {testimonials.map((t, i) => (
+      <TestimonialCard key={i} quote={t.quote} name={t.name} role={t.role} avatar={t.avatar} />
+    ))}
+  </div>
+</Section>
+
+{{/* CONTACT */}
 <Divider />
 <Section id="contact" label="Contact" className="py-8 md:py-12">
-  <div className="max-w-2xl mx-auto text-center">
+  <div className="max-w-2xl mx-auto text-center min-h-[45vh] flex flex-col">
     <Reveal>
       <SectionTitle text="Let’s Connect" />
     </Reveal>
@@ -414,17 +445,20 @@ export default function App() {
         Have a project or idea you’d like to explore? I’m open to select collaborations.
       </p>
     </Reveal>
-    <Reveal delay={0.16}>
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-        <CTAButton href="mailto:canyen@example.com">Email Me</CTAButton>
-        <motion.a href="https://www.linkedin.com/in/canyenpalmer/" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2">
-          <Linkedin className="size-4" /> LinkedIn
-        </motion.a>
-        <motion.a href="https://github.com/CanyenPalmer" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2">
-          <Github className="size-4" /> GitHub
-        </motion.a>
-      </div>
-    </Reveal>
+    {/* Buttons anchored to the bottom of this section box */}
+    <div className="mt-auto pt-8">
+      <Reveal delay={0.16}>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <CTAButton href="mailto:canyen@example.com">Email Me</CTAButton>
+          <motion.a href="https://www.linkedin.com/in/canyenpalmer/" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2">
+            <Linkedin className="size-4" /> LinkedIn
+          </motion.a>
+          <motion.a href="https://github.com/CanyenPalmer" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2">
+            <Github className="size-4" /> GitHub
+          </motion.a>
+        </div>
+      </Reveal>
+    </div>
   </div>
 </Section>
 
