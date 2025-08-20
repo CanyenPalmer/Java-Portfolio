@@ -41,15 +41,15 @@ const Reveal = ({
   const prefersReduced = useReducedMotion();
 
   if (prefersReduced) {
-    return <div style={{ opacity: 1, transform: "none" }}>{children}</div>;
+    return <div style={ opacity: 1, transform: "none" }>{children}</div>;
   }
 
   return (
     <Tag
-      initial={{ y, opacity: 0 }}
-      whileInView={{ y: 0, opacity: 1 }}
-      viewport={{ once, amount: threshold, margin: "-20% 0px -20% 0px" }}
-      transition={{ duration, delay, ease: "easeOut" }}
+      initial={ y, opacity: 0 }
+      whileInView={ y: 0, opacity: 1 }
+      viewport={ once, amount: threshold, margin: "-20% 0px -20% 0px" }
+      transition={ duration, delay, ease: "easeOut" }
     >
       {children}
     </Tag>
@@ -60,16 +60,16 @@ const RevealGroup = ({ children, delay = 0, stagger = 0.12 }) => (
   <motion.div
     initial="hidden"
     whileInView="show"
-    viewport={{ once: true, amount: 0.25 }}
-    variants={{
+    viewport={ once: true, amount: 0.25 }
+    variants={
       hidden: {},
       show: { transition: { staggerChildren: stagger, delayChildren: delay } },
-    }}
+    }
   >
     {React.Children.map(children, (child) => (
       <motion.div
-        variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        variants={ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }
+        transition={ duration: 0.5, ease: "easeOut" }
       >
         {child}
       </motion.div>
@@ -87,19 +87,19 @@ const HeroName = ({ text }) => {
   return (
     <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-center">
       <motion.span
-        initial={{ y: 20, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.0, type: "spring", stiffness: 120 }}
-        viewport={{ once: true }}
+        initial={ y: 20, opacity: 0 }
+        whileInView={ y: 0, opacity: 1 }
+        transition={ delay: 0.0, type: "spring", stiffness: 120 }
+        viewport={ once: true }
         className="block tracking-[.2em] md:tracking-[.28em] mb-2"
       >
         {first}
       </motion.span>
       <motion.span
-        initial={{ y: 24, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.12, type: "spring", stiffness: 120 }}
-        viewport={{ once: true }}
+        initial={ y: 24, opacity: 0 }
+        whileInView={ y: 0, opacity: 1 }
+        transition={ delay: 0.12, type: "spring", stiffness: 120 }
+        viewport={ once: true }
         className="block tracking-[.2em] md:tracking-[.28em]"
       >
         {last}
@@ -110,10 +110,10 @@ const HeroName = ({ text }) => {
 
 const SectionTitle = ({ text }) => (
   <motion.h2
-    initial={{ y: 18, opacity: 0 }}
-    whileInView={{ y: 0, opacity: 1 }}
-    viewport={{ once: true, margin: "-20% 0px -20% 0px" }}
-    transition={{ duration: 0.5 }}
+    initial={ y: 18, opacity: 0 }
+    whileInView={ y: 0, opacity: 1 }
+    viewport={ once: true, margin: "-20% 0px -20% 0px" }
+    transition={ duration: 0.5 }
     className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase text-center"
   >
     {text}
@@ -129,8 +129,8 @@ const Pill = ({ children }) => (
 const CTAButton = ({ href, children }) => (
   <motion.a
     href={href}
-    whileHover={{ scale: 1.03 }}
-    whileTap={{ scale: 0.98 }}
+    whileHover={ scale: 1.03 }
+    whileTap={ scale: 0.98 }
     className="inline-flex items-center gap-2 rounded-xl bg-white text-black px-4 py-2 font-semibold shadow-sm hover:shadow-md transition-shadow"
   >
     {children} <ArrowRight className="size-4" />
@@ -160,10 +160,10 @@ const Clock = () => {
 ------------------------------------------------------- */
 const ServiceCard = ({ index, title, desc, bullets }) => (
   <motion.div
-    initial={{ y: 20, opacity: 0 }}
-    whileInView={{ y: 0, opacity: 1 }}
-    viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-    transition={{ duration: 0.5, delay: index * 0.08 }}
+    initial={ y: 20, opacity: 0 }
+    whileInView={ y: 0, opacity: 1 }
+    viewport={ once: true, margin: "-10% 0px -10% 0px" }
+    transition={ duration: 0.5, delay: index * 0.08 }
     className="group rounded-3xl border border-white/10 bg-white/[.03] p-6 md:p-8 hover:bg-white/[.06] transition-colors"
   >
     <div className="flex items-start justify-between mb-6">
@@ -187,10 +187,10 @@ $1
 ------------------------------------------------------- */
 const TestimonialCard = ({ quote, name, role, avatar }) => (
   <motion.figure
-    initial={{ y: 20, opacity: 0 }}
-    whileInView={{ y: 0, opacity: 1 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.5 }}
+    initial={ y: 20, opacity: 0 }
+    whileInView={ y: 0, opacity: 1 }
+    viewport={ once: true }
+    transition={ duration: 0.5 }
     className="rounded-3xl border border-white/10 bg-white/[.03] p-6 md:p-8"
   >
     <blockquote className="text-white/85 leading-relaxed">“{quote}”</blockquote>
@@ -273,8 +273,8 @@ export default function App() {
             href="https://github.com/CanyenPalmer"
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={ scale: 1.03 }
+            whileTap={ scale: 0.98 }
             className="inline-flex items-center gap-1 rounded-xl border border-white/15 px-3 py-2 text-sm hover:bg-white/10"
           >
             <Github className="size-4" /> GitHub
@@ -283,8 +283,8 @@ export default function App() {
             href="/Canyen_Palmer_Resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={ scale: 1.03 }
+            whileTap={ scale: 0.98 }
             className="inline-flex items-center gap-1 rounded-xl border border-white/15 px-3 py-2 text-sm hover:bg-white/10"
           >
             <FileText className="size-4" /> Resume
@@ -329,7 +329,7 @@ export default function App() {
 
             <div className="flex items-center gap-4">
               <CTAButton href="#contact">Let's Connect</CTAButton>
-              <motion.a whileHover={{ opacity: 0.85 }} href="#works" className="underline underline-offset-4">
+              <motion.a whileHover={ opacity: 0.85 } href="#works" className="underline underline-offset-4">
                 See my work
               </motion.a>
             </div>
@@ -346,9 +346,9 @@ export default function App() {
           <div className="md:col-span-5">
             <Reveal y={12}>
             <motion.div
-              initial={{ y: 0 }}
-              animate={prefersReduced ? {} : { y: [0, -8, 0] }}
-              transition={prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              initial={ y: 0 }
+              animate={prefersReduced ? {} : { y: [0, -8, 0] }
+              transition={prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }
               className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
             >
               <img
@@ -407,7 +407,7 @@ export default function App() {
   </div>
 </Section>
 
-{{/* WORK / PROJECTS */}
+{/* WORK / PROJECTS */}
 <Divider />
 <Section id="works" label="Selected Work" className="py-8 md:py-12">
   <Reveal>
@@ -433,7 +433,7 @@ export default function App() {
   </div>
 </Section>
 
-{{/* CONTACT */}
+{/* CONTACT */}
 <Divider />
 <Section id="contact" label="Contact" className="py-8 md:py-12">
   <div className="max-w-2xl mx-auto text-center min-h-[45vh] flex flex-col">
@@ -450,10 +450,10 @@ export default function App() {
       <Reveal delay={0.16}>
         <div className="flex flex-wrap items-center justify-center gap-3">
           <CTAButton href="mailto:canyen@example.com">Email Me</CTAButton>
-          <motion.a href="https://www.linkedin.com/in/canyenpalmer/" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2">
+          <motion.a href="https://www.linkedin.com/in/canyenpalmer/" target="_blank" rel="noopener noreferrer" whileHover={ scale: 1.03 } whileTap={ scale: 0.98 } className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2">
             <Linkedin className="size-4" /> LinkedIn
           </motion.a>
-          <motion.a href="https://github.com/CanyenPalmer" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2">
+          <motion.a href="https://github.com/CanyenPalmer" target="_blank" rel="noopener noreferrer" whileHover={ scale: 1.03 } whileTap={ scale: 0.98 } className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2">
             <Github className="size-4" /> GitHub
           </motion.a>
         </div>
