@@ -415,10 +415,13 @@ export default function App() {
       </p>
     </Reveal>
     <Reveal delay={0.16}>
-      <div className="mt-6 flex items-center justify-center gap-3">
-        <CTAButton href="mailto:canyen@example.com">Email Me</CTAButton>
-        <motion.a href="https://www.linkedin.com/in/canyenpalmer/" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2">
-          <Linkedin className="size-4" /> LinkedIn
+      <div className=\"mt-6 flex flex-wrap items-center justify-center gap-3\">
+        <CTAButton href=\"mailto:canyen@example.com\">Email Me</CTAButton>
+        <motion.a href=\"https://www.linkedin.com/in/canyenpalmer/\" target=\"_blank\" rel=\"noopener noreferrer\" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className=\"inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2\">
+          <Linkedin className=\"size-4\" /> LinkedIn
+        </motion.a>
+        <motion.a href=\"https://github.com/CanyenPalmer\" target=\"_blank\" rel=\"noopener noreferrer\" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className=\"inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2\">
+          <Github className=\"size-4\" /> GitHub
         </motion.a>
       </div>
     </Reveal>
@@ -426,12 +429,7 @@ export default function App() {
 </Section>
 
 {/* FOOTER */}
-      <footer className="container mx-auto px-4 py-10 text-center text-white/60">
-        <div className="flex items-center justify-center gap-4 mb-3">
-          <a href="mailto:canyen@example.com" className="hover:text-white"><Mail className="inline size-4 mr-1" /> Email</a>
-          <a href="https://www.linkedin.com/in/canyenpalmer/" className="hover:text-white" target="_blank" rel="noopener noreferrer"><Linkedin className="inline size-4 mr-1" /> LinkedIn</a>
-          <a href="https://github.com/CanyenPalmer" className="hover:text-white" target="_blank" rel="noopener noreferrer"><Github className="inline size-4 mr-1" /> GitHub</a>
-        </div>
+      <footer className=\"container mx-auto px-4 py-10 text-center text-white/60\">
         <div>© {new Date().getFullYear()} Canyen Palmer</div>
       </footer>
     </main>
