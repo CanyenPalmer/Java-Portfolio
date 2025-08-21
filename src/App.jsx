@@ -1,4 +1,3 @@
-/* Full drop-in replacement for src/App.jsx — all sections included */
 import React, { useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Github, Linkedin, FileText } from "lucide-react";
