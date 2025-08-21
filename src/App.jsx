@@ -525,7 +525,6 @@ export default function App() {
           © {new Date().getFullYear()} Canyen Palmer
         </div>
       </Section>
-    </main>
-  );
-}
+      </main>
+      }
 
