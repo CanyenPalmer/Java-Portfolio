@@ -173,9 +173,7 @@ const ServiceCard = ({ index, title, desc, bullets }) => (
     <p className="text-white/80 mb-4">{desc}</p>
     <ul className="text-sm text-white/70 grid grid-cols-2 gap-1">
       {bullets.map((b, i) => (
-        <li key={i} className="before:content-['•'] before:mr-1 before:opacity-60">
-          {b}
-        </li>
+        <li key={i} className="before:content-['•'] before:mr-1 before:opacity-60">{b}</li>
       ))}
     </ul>
   </motion.div>
@@ -255,51 +253,11 @@ export default function App() {
 
   const works = useMemo(
     () => [
-      {
-        tag: "Golf Physics",
-        title: "MyCaddy — Shot Calculator",
-        role: "Rangefinder • Physics",
-        year: "2024",
-        url: "https://github.com/CanyenPalmer/CanyenPalmer.github.io",
-        img: IMG.mycaddy,
-        alt: "MyCaddy rangefinder logo",
-      },
-      {
-        tag: "Machine Learning",
-        title: "Salifort Motors — Attrition",
-        role: "Classification • ML",
-        year: "2024",
-        url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning",
-        img: IMG.salifort,
-        alt: "Salifort Attrition project",
-      },
-      {
-        tag: "Healthcare Ops",
-        title: "CGM Billing Analytics",
-        role: "EDA • Forecasting",
-        year: "2024",
-        url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics",
-        img: IMG.cgm,
-        alt: "CGM billing analytics",
-      },
-      {
-        tag: "Real Estate (R)",
-        title: "Ames Housing — Price Modeling",
-        role: "Regression • R",
-        year: "2024",
-        url: "https://github.com/CanyenPalmer/ames-housing",
-        img: IMG.realEstate,
-        alt: "Ames housing real estate modeling",
-      },
-      {
-        tag: "Portfolio",
-        title: "Portfolio (This Site)",
-        role: "UI • Vite • Tailwind",
-        year: "2025",
-        url: "https://github.com/CanyenPalmer/Java-Portfolio-main",
-        img: IMG.portfolio,
-        alt: "Portfolio preview",
-      },
+      { tag: "Golf Physics", title: "MyCaddy — Shot Calculator", role: "Rangefinder • Physics", year: "2024", url: "https://github.com/CanyenPalmer/CanyenPalmer.github.io", img: IMG.mycaddy, alt: "MyCaddy rangefinder logo" },
+      { tag: "Machine Learning", title: "Salifort Motors — Attrition", role: "Classification • ML", year: "2024", url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning", img: IMG.salifort, alt: "Salifort Attrition project" },
+      { tag: "Healthcare Ops", title: "CGM Billing Analytics", role: "EDA • Forecasting", year: "2024", url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics", img: IMG.cgm, alt: "CGM billing analytics" },
+      { tag: "Real Estate (R)", title: "Ames Housing — Price Modeling", role: "Regression • R", year: "2024", url: "https://github.com/CanyenPalmer/ames-housing", img: IMG.realEstate, alt: "Ames housing real estate modeling" },
+      { tag: "Portfolio", title: "Portfolio (This Site)", role: "UI • Vite • Tailwind", year: "2025", url: "https://github.com/CanyenPalmer/Java-Portfolio-main", img: IMG.portfolio, alt: "Portfolio preview" },
     ],
     []
   );
@@ -403,13 +361,13 @@ export default function App() {
             </RevealGroup>
           </div>
 
-          {/* Floating headshot card (better rendering) */}
+          {/* Floating headshot card (better rendering, jpg only) */}
           <div className="md:col-span-5">
             <Reveal y={12}>
               <motion.div
                 initial={{ y: 0 }}
                 animate={prefersReduced ? {} : { y: [0, -8, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" } }}
                 className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
                 style={{
                   willChange: "transform",
@@ -417,24 +375,16 @@ export default function App() {
                   backfaceVisibility: "hidden",
                 }}
               >
-                {/* Use <picture> so the browser picks the sharpest format/size */}
-                <picture>
-                  {/* Best quality/size first */}
-                  <source srcSet="/images/headshot.avif" type="image/avif" />
-                  <source srcSet="/images/headshot@2x.webp 2x, /images/headshot.webp 1x" type="image/webp" />
-                  {/* Fallback JPG with DPR variants if you have them; otherwise your existing JPG */}
-                  <img
-                    src={IMG.hero} // fallback jpg
-                    srcSet="/images/headshot@2x.jpg 2x, /images/headshot.jpg 1x"
-                    alt="Canyen Palmer headshot"
-                    className="w-full h-full object-cover"
-                    width={960}
-                    height={1200}
-                    loading="eager"
-                    fetchPriority="high"
-                    decoding="async"
-                  />
-                </picture>
+                <img
+                  src="/images/headshot.jpg"
+                  alt="Canyen Palmer headshot"
+                  className="w-full h-full object-cover"
+                  width={960}
+                  height={1200}
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                />
               </motion.div>
             </Reveal>
           </div>
@@ -558,12 +508,11 @@ export default function App() {
           <span>Indiana, USA</span>
           <Clock />
         </div>
-        <div className="mt-4 text-center text-white/60">© {new Date().getFullYear()} Canyen Palmer</div>
+        <div className="mt-4 text-center text-white/60">
+          © {new Date().getFullYear()} Canyen Palmer
+        </div>
       </Section>
     </main>
   );
 }
-
-
-
 
