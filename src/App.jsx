@@ -1,3 +1,4 @@
+/* Full drop-in replacement for src/App.jsx — preserves your sections & restores hero image sizing */
 import React, { useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Github, Linkedin, FileText } from "lucide-react";
@@ -6,7 +7,9 @@ import { ArrowRight, Github, Linkedin, FileText } from "lucide-react";
    ASSETS
 ------------------------------------------------------- */
 const IMG = {
-  hero: "/images/headshot.jpg",
+  // per your note: actual file on disk is public/images/headshot.jpg
+  // we will reference it exactly as you asked:
+  hero: "/public/images/headshot.jpg",
   mycaddy: "/images/mycaddy.jpg",
   salifort: "/images/salifort.png",
   cgm: "/images/cgm.jpg",
@@ -287,7 +290,6 @@ export default function App() {
           CANYEN PALMER
         </a>
         <div className="flex items-center gap-3">
-          {/* Resume stays in header (no header clock) */}
           <motion.a
             href="https://github.com/CanyenPalmer"
             target="_blank"
@@ -361,28 +363,22 @@ export default function App() {
             </RevealGroup>
           </div>
 
-          {/* Floating headshot card (better rendering, jpg only) */}
+          {/* Floating headshot card (restored sizing / animation) */}
           <div className="md:col-span-5">
             <Reveal y={12}>
               <motion.div
                 initial={{ y: 0 }}
                 animate={prefersReduced ? {} : { y: [0, -8, 0] }}
-                transition={{ prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" } }}
-                className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
-                style={{
-                  willChange: "transform",
-                  transform: "translateZ(0)",
-                  backfaceVisibility: "hidden",
-                }}
+                transition={prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                className="aspect-[4/5] w-full rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
               >
                 <img
-                  src="/images/headshot.jpg"
+                  src={IMG.hero}
                   alt="Canyen Palmer headshot"
                   className="w-full h-full object-cover"
                   width={960}
                   height={1200}
                   loading="eager"
-                  fetchPriority="high"
                   decoding="async"
                 />
               </motion.div>
