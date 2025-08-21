@@ -361,7 +361,7 @@ export default function App() {
             </RevealGroup>
           </div>
 
-          {/* Floating headshot card */}
+          {/* Floating headshot card (better rendering) */}
           <div className="md:col-span-5">
             <Reveal y={12}>
               <motion.div
@@ -369,19 +369,40 @@ export default function App() {
                 animate={prefersReduced ? {} : { y: [0, -8, 0] }}
                 transition={prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
+                style={{
+                  willChange: "transform",
+                  transform: "translateZ(0)",
+                  backfaceVisibility: "hidden",
+                }}
               >
-                <img
-                  src={IMG.hero}
-                  alt="Canyen Palmer headshot"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  decoding="async"
-                />
+                {/* Use <picture> so the browser picks the sharpest format/size */}
+                <picture>
+                  {/* Best quality/size first */}
+                  <source
+                    srcSet="/images/headshot.avif"
+                    type="image/avif"
+                  />
+                  <source
+                    srcSet="/images/headshot@2x.webp 2x, /images/headshot.webp 1x"
+                    type="image/webp"
+                  />
+                  {/* Fallback JPG with DPR variants if you have them; otherwise your existing JPG */}
+                  <img
+                    src={IMG.hero}                     // fallback jpg
+                    srcSet="/images/headshot@2x.jpg 2x, /images/headshot.jpg 1x"
+                    alt="Canyen Palmer headshot"
+                    className="w-full h-full object-cover"
+                    width={960}                        // match the rendered 1x size
+                    height={1200}
+                    loading="eager"                    // prioritize hero
+                    fetchpriority="high"               // hint: load this ASAP
+                    decoding="async"
+                  />
+                </picture>
               </motion.div>
             </Reveal>
           </div>
-        </div>
-      </Section>
+
 
       {/* ABOUT */}
       <Divider />
