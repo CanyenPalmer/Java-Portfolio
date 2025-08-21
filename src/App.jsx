@@ -27,7 +27,7 @@ const Section = ({ id, label, className = "", children }) => (
 const Divider = () => <div className="h-px w-full bg-white/10 my-16" />;
 
 /* -------------------------------------------------------
-   ANIMATION HELPERS (Upgraded)
+   ANIMATION HELPERS
 ------------------------------------------------------- */
 const Reveal = ({
   children,
@@ -150,7 +150,7 @@ const Clock = () => {
 
   return (
     <span className="font-mono text-xs md:text-sm opacity-80 tabular-nums">
-      {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+      {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
     </span>
   );
 };
@@ -255,7 +255,7 @@ export default function App() {
   const works = useMemo(
     () => [
       { tag: "Golf Physics", title: "MyCaddy — Shot Calculator", role: "Rangefinder • Physics", year: "2024", url: "https://github.com/CanyenPalmer/CanyenPalmer.github.io", img: IMG.mycaddy, alt: "MyCaddy rangefinder logo" },
-      { tag: "Machine Learning", title: "Salifort Motors — Attrition", role: "Classification • ML", year: "2024", url: "https://github.com/CanyenPalmer/ML_EmployeeAttrition", img: IMG.salifort, alt: "Salifort Attrition project" },
+      { tag: "Machine Learning", title: "Salifort Motors — Attrition", role: "Classification • ML", year: "2024", url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning", img: IMG.salifort, alt: "Salifort Attrition project" },
       { tag: "Healthcare Ops", title: "CGM Billing Analytics", role: "EDA • Forecasting", year: "2024", url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics", img: IMG.cgm, alt: "CGM billing analytics" },
       { tag: "Real Estate (R)", title: "Ames Housing — Price Modeling", role: "Regression • R", year: "2024", url: "https://github.com/CanyenPalmer/ames-housing", img: IMG.realEstate, alt: "Ames housing real estate modeling" },
       { tag: "Portfolio", title: "Portfolio (This Site)", role: "UI • Vite • Tailwind", year: "2025", url: "https://github.com/CanyenPalmer/Java-Portfolio-main", img: IMG.portfolio, alt: "Portfolio preview" },
@@ -263,7 +263,7 @@ export default function App() {
     []
   );
 
-  // Keep only the two testimonials; avatar not used by TestimonialCard
+  // Exactly two testimonials, no avatars
   const testimonials = useMemo(
     () => [
       {
@@ -284,9 +284,11 @@ export default function App() {
   return (
     <main className="text-white bg-[#0b0b0f] min-h-screen">
       <header className="container mx-auto px-4 py-5 flex items-center justify-between">
-        <a href="#home" className="text-sm tracking-widest opacity-90 hover:opacity-100 transition">CANYEN PALMER</a>
+        <a href="#home" className="text-sm tracking-widest opacity-90 hover:opacity-100 transition">
+          CANYEN PALMER
+        </a>
         <div className="flex items-center gap-3">
-          <Clock />
+          {/* Resume stays in header (no header clock) */}
           <motion.a
             href="https://github.com/CanyenPalmer"
             target="_blank"
@@ -298,7 +300,7 @@ export default function App() {
             <Github className="size-4" /> GitHub
           </motion.a>
           <motion.a
-            href="/Canyen_Palmer_Resume.pdf"
+            href="https://2d7974f8-5fa5-4136-aaa2-354b07c4877e.filesusr.com/ugd/a966b5_f4890026c5b444fa945767c74232e285.pdf"
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.03 }}
@@ -366,7 +368,7 @@ export default function App() {
               <motion.div
                 initial={{ y: 0 }}
                 animate={prefersReduced ? {} : { y: [0, -8, 0] }}
-                transition={{ prefersReduced } ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                transition={prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
               >
                 <img
@@ -490,16 +492,20 @@ export default function App() {
         </div>
       </Section>
 
-      {/* FOOTER / LINKS */}
-      <Divider />
-      <Section id="links" label="Links" className="py-12">
+      {/* LINKS (Footer) — no divider above, tight spacing, location + clock */}
+      <Section id="links" label="Links" className="py-6">
         <Reveal>
           <SectionTitle text="Links" />
         </Reveal>
-        <div className="mt-6 text-center text-white/60">
+        <div className="mt-4 flex flex-col items-center space-y-2 text-white/70">
+          <span>Indiana, USA</span>
+          <Clock />
+        </div>
+        <div className="mt-4 text-center text-white/60">
           © {new Date().getFullYear()} Canyen Palmer
         </div>
       </Section>
     </main>
   );
 }
+
