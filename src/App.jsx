@@ -1,15 +1,12 @@
-/* Full drop-in replacement for src/App.jsx — preserves your sections & restores hero image sizing */
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Github, Linkedin, FileText } from "lucide-react";
+import { ArrowRight, PlayCircle, Github, Linkedin, Mail, FileText } from "lucide-react";
 
 /* -------------------------------------------------------
    ASSETS
 ------------------------------------------------------- */
 const IMG = {
-  // per your note: actual file on disk is public/images/headshot.jpg
-  // we will reference it exactly as you asked:
-  hero: "/public/images/headshot.jpg",
+  hero: "/images/headshot.jpg",
   mycaddy: "/images/mycaddy.jpg",
   salifort: "/images/salifort.png",
   cgm: "/images/cgm.jpg",
@@ -18,10 +15,11 @@ const IMG = {
 };
 
 /* -------------------------------------------------------
-   BASE LAYOUT HELPERS
+   LAYOUT HELPERS
 ------------------------------------------------------- */
-const Section = ({ id, label, className = "", children }) => (
-  <section id={id} aria-label={label} className={`container mx-auto px-4 ${className}`}>
+const Section = ({ id, label, children, className = "" }) => (
+  <section id={id} className={`relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>
+    <div className="sr-only"><h2>{label}</h2></div>
     {children}
   </section>
 );
@@ -31,56 +29,21 @@ const Divider = () => <div className="h-px w-full bg-white/10 my-16" />;
 /* -------------------------------------------------------
    ANIMATION HELPERS
 ------------------------------------------------------- */
-const Reveal = ({
-  children,
-  delay = 0,
-  y = 18,
-  threshold = 0.2,
-  once = true,
-  duration = 0.5,
-  as: Tag = motion.div,
-}) => {
-  const prefersReduced = useReducedMotion();
-
-  if (prefersReduced) {
-    return <div style={{ opacity: 1, transform: "none" }}>{children}</div>;
-  }
-
+const Reveal = ({ children, delay = 0, y = 18 }) => {
   return (
-    <Tag
+    <motion.div
       initial={{ y, opacity: 0 }}
       whileInView={{ y: 0, opacity: 1 }}
-      viewport={{ once, amount: threshold, margin: "-20% 0px -20% 0px" }}
-      transition={{ duration, delay, ease: "easeOut" }}
+      viewport={{ once: true, margin: "-20% 0px -20% 0px" }}
+      transition={{ duration: 0.5, delay }}
     >
       {children}
-    </Tag>
+    </motion.div>
   );
 };
 
-const RevealGroup = ({ children, delay = 0, stagger = 0.12 }) => (
-  <motion.div
-    initial="hidden"
-    whileInView="show"
-    viewport={{ once: true, amount: 0.25 }}
-    variants={{
-      hidden: {},
-      show: { transition: { staggerChildren: stagger, delayChildren: delay } },
-    }}
-  >
-    {React.Children.map(children, (child) => (
-      <motion.div
-        variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-      >
-        {child}
-      </motion.div>
-    ))}
-  </motion.div>
-);
-
 /* -------------------------------------------------------
-   HERO NAME & TITLES
+   TITLES
 ------------------------------------------------------- */
 const HeroName = ({ text }) => {
   const parts = text.trim().split(/\s+/);
@@ -98,7 +61,7 @@ const HeroName = ({ text }) => {
         {first}
       </motion.span>
       <motion.span
-        initial={{ y: 24, opacity: 0 }}
+        initial={{ y: 20, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.12, type: "spring", stiffness: 120 }}
         viewport={{ once: true }}
@@ -116,46 +79,31 @@ const SectionTitle = ({ text }) => (
     whileInView={{ y: 0, opacity: 1 }}
     viewport={{ once: true, margin: "-20% 0px -20% 0px" }}
     transition={{ duration: 0.5 }}
-    className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase text-center"
+    className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase text-center tracking-wide"
   >
     {text}
   </motion.h2>
 );
 
+/* -------------------------------------------------------
+   UI PRIMITIVES
+------------------------------------------------------- */
 const Pill = ({ children }) => (
-  <span className="inline-block rounded-full border border-white/20 bg-white/5 px-3 py-1 text-xs tracking-wider uppercase">
+  <span className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs tracking-wide uppercase">
     {children}
   </span>
 );
 
-const CTAButton = ({ href, children }) => (
+const CTAButton = ({ href = "#contact", children }) => (
   <motion.a
     href={href}
     whileHover={{ scale: 1.03 }}
     whileTap={{ scale: 0.98 }}
-    className="inline-flex items-center gap-2 rounded-xl bg-white text-black px-4 py-2 font-semibold shadow-sm hover:shadow-md transition-shadow"
+    className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white text-black px-5 py-3 font-semibold shadow-sm hover:shadow-lg transition-shadow"
   >
     {children} <ArrowRight className="size-4" />
   </motion.a>
 );
-
-/* -------------------------------------------------------
-   UTILITIES — LIVE CLOCK
-------------------------------------------------------- */
-const Clock = () => {
-  const [time, setTime] = React.useState(new Date());
-
-  React.useEffect(() => {
-    const t = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  return (
-    <span className="font-mono text-xs md:text-sm opacity-80 tabular-nums">
-      {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
-    </span>
-  );
-};
 
 /* -------------------------------------------------------
    CARDS
@@ -166,17 +114,19 @@ const ServiceCard = ({ index, title, desc, bullets }) => (
     whileInView={{ y: 0, opacity: 1 }}
     viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
     transition={{ duration: 0.5, delay: index * 0.08 }}
-    className="group rounded-3xl border border-white/10 bg-white/[.03] p-6 md:p-8 hover:bg-white/[.06] transition-colors"
+    className="group rounded-3xl border border-white/10 bg-white/[.03] p-6 md:p-8 hover:bg-white/[.06] transition-colors shadow-sm"
   >
     <div className="flex items-start justify-between mb-6">
       <Pill>{String(index + 1).padStart(2, "0")}</Pill>
-      <ArrowRight className="size-5 opacity-60 group-hover:opacity-90 transition-opacity" />
+      <Pill>Service</Pill>
     </div>
-    <h3 className="text-xl md:text-2xl font-semibold mb-2">{title}</h3>
-    <p className="text-white/80 mb-4">{desc}</p>
-    <ul className="text-sm text-white/70 grid grid-cols-2 gap-1">
+    <h3 className="text-2xl md:text-3xl font-semibold mb-3">{title}</h3>
+    <p className="text-white/80 mb-6 leading-relaxed">{desc}</p>
+    <ul className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
       {bullets.map((b, i) => (
-        <li key={i} className="before:content-['•'] before:mr-1 before:opacity-60">{b}</li>
+        <li key={i} className="rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-white/90">
+          {b}
+        </li>
       ))}
     </ul>
   </motion.div>
@@ -184,50 +134,76 @@ const ServiceCard = ({ index, title, desc, bullets }) => (
 
 const WorkCard = ({ tag, title, role, year, url, img, alt }) => (
   <motion.a
-    href={url}
-    target="_blank"
-    rel="noopener noreferrer"
+    href={url || "#"}
+    target={url ? "_blank" : undefined}
+    rel={url ? "noopener noreferrer" : undefined}
     initial={{ y: 20, opacity: 0 }}
     whileInView={{ y: 0, opacity: 1 }}
-    viewport={{ once: true }}
+    viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
     transition={{ duration: 0.5 }}
-    className="block rounded-3xl overflow-hidden border border-white/10 bg-white/[.03] hover:bg-white/[.06]"
+    whileHover={{ y: -4 }}
+    className="block rounded-3xl overflow-hidden border border-white/10 bg-white/[.03] hover:bg-white/[.06] transition-colors"
   >
     <div className="aspect-video overflow-hidden">
-      <img src={img} alt={alt} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+      {img ? (
+        <img
+          src={img}
+          alt={alt || title}
+          className="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <div className="w-full h-full grid place-items-center bg-black/30">
+          <PlayCircle className="size-16 md:size-20 opacity-70" />
+        </div>
+      )}
     </div>
-    <div className="p-5 flex items-center justify-between">
-      <div>
+    <div className="p-5 md:p-6 border-t border-white/10">
+      <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide mb-2 text-white/70">
         <Pill>{tag}</Pill>
-        <h3 className="text-lg md:text-xl font-semibold mt-2">{title}</h3>
-        <p className="text-sm text-white/70">{role}</p>
+        <Pill>{year}</Pill>
       </div>
-      <span className="text-sm text-white/60">{year}</span>
+      <div className="flex flex-wrap items-center gap-3">
+        <h4 className="text-lg md:text-xl font-semibold">{title}</h4>
+        <span className="text-white/60">•</span>
+        <p className="text-white/80">{role}</p>
+      </div>
     </div>
   </motion.a>
 );
 
 /* -------------------------------------------------------
-   Testimonial Card (no avatar)
+   LOCAL TIME WIDGET
 ------------------------------------------------------- */
-const TestimonialCard = ({ quote, name, role }) => (
-  <motion.figure
-    initial={{ y: 20, opacity: 0 }}
-    whileInView={{ y: 0, opacity: 1 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.5 }}
-    className="rounded-3xl border border-white/10 bg-white/[.03] p-6 md:p-8"
-  >
-    <blockquote className="text-white/85 leading-relaxed">“{quote}”</blockquote>
-    <figcaption className="mt-5">
-      <div className="font-medium">{name}</div>
-      {role && <div className="text-sm text-white/60">{role}</div>}
-    </figcaption>
-  </motion.figure>
-);
+function LocalTime({ timeZone = "America/Indiana/Indianapolis", label = "Indianapolis" }) {
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const time = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  }).format(now);
+
+  const tzParts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    timeZoneName: "short",
+    hour: "numeric",
+  }).formatToParts(now);
+  const tzShort = tzParts.find((p) => p.type === "timeZoneName")?.value ?? "";
+
+  return <span aria-label={`Local time in ${label}`}>{time} {tzShort}</span>;
+}
 
 /* -------------------------------------------------------
-   APP
+   PAGE
 ------------------------------------------------------- */
 export default function App() {
   const prefersReduced = useReducedMotion();
@@ -256,61 +232,82 @@ export default function App() {
 
   const works = useMemo(
     () => [
-      { tag: "Golf Physics", title: "MyCaddy — Shot Calculator", role: "Rangefinder • Physics", year: "2024", url: "https://github.com/CanyenPalmer/CanyenPalmer.github.io", img: IMG.mycaddy, alt: "MyCaddy rangefinder logo" },
-      { tag: "Machine Learning", title: "Salifort Motors — Attrition", role: "Classification • ML", year: "2024", url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning", img: IMG.salifort, alt: "Salifort Attrition project" },
-      { tag: "Healthcare Ops", title: "CGM Billing Analytics", role: "EDA • Forecasting", year: "2024", url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics", img: IMG.cgm, alt: "CGM billing analytics" },
-      { tag: "Real Estate (R)", title: "Ames Housing — Price Modeling", role: "Regression • R", year: "2024", url: "https://github.com/CanyenPalmer/ames-housing", img: IMG.realEstate, alt: "Ames housing real estate modeling" },
-      { tag: "Portfolio", title: "Portfolio (This Site)", role: "UI • Vite • Tailwind", year: "2025", url: "https://github.com/CanyenPalmer/Java-Portfolio-main", img: IMG.portfolio, alt: "Portfolio preview" },
+      { tag: "Golf Physics", title: "MyCaddy — Shot Calculator", role: "Design • Dev", year: "2025", url: "https://mycaddy.onrender.com/", img: IMG.mycaddy, alt: "MyCaddy rangefinder logo" },
+      { tag: "Machine Learning", title: "Salifort Motors — Attrition ML", role: "EDA • Modeling", year: "2024", url: "https://github.com/CanyenPalmer/Logistic-Regression-and-Tree-based-Machine-Learning", img: IMG.salifort, alt: "Salifort Attrition project" },
+      { tag: "Healthcare Ops", title: "CGM Billing Analytics", role: "Automation • Python", year: "2025", url: "https://github.com/CanyenPalmer/CGM-Patient-Analytics", img: IMG.cgm, alt: "CGM billing analytics" },
+      { tag: "Real Estate (R)", title: "Ames Housing — Price Modeling", role: "Modeling • Viz", year: "2023", url: "https://github.com/CanyenPalmer/R-Coding---Real-estate-Conditions-Comparrison", img: IMG.realEstate, alt: "Ames housing real estate modeling" },
+      { tag: "Portfolio", title: "Portfolio (This Site)", role: "Design", year: "2025", url: "https://github.com/CanyenPalmer/Java-Portfolio", img: IMG.portfolio, alt: "Palmer Projects blog thumbnail" },
     ],
     []
   );
 
-  // Exactly two testimonials, no avatars
+  // Testimonials — ONLY the two you want
   const testimonials = useMemo(
     () => [
       {
         quote: "The MyCaddy tool gave us more confidence on the course! Super impressive.",
-        name: "C. Smith",
-        role: "Amateur Golfer",
+        author: "C. Smith",
+        title: "Amateur Golfer",
       },
       {
         quote: "Palmer Projects delivered exactly what we needed — fast, clean, and professional.",
-        name: "G. Waterman",
-        role: "Sports Enthusiast",
+        author: "G. Waterman",
+        title: "Football Enthusiast",
       },
     ],
     []
   );
+  const [tIndex, setTIndex] = useState(0);
 
-  /* Header */
+  // Auto-advance every 6s (disabled if reduced motion)
+  useEffect(() => {
+    if (prefersReduced) return;
+    const id = setInterval(() => setTIndex((i) => (i + 1) % testimonials.length), 6000);
+    return () => clearInterval(id);
+  }, [testimonials.length, prefersReduced]);
+
   return (
-    <main className="text-white bg-[#0b0b0f] min-h-screen">
-      <header className="container mx-auto px-4 py-5 flex items-center justify-between">
-        <a href="#home" className="text-sm tracking-widest opacity-90 hover:opacity-100 transition">
-          CANYEN PALMER
-        </a>
-        <div className="flex items-center gap-3">
-          <motion.a
-            href="https://github.com/CanyenPalmer"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-1 rounded-xl border border-white/15 px-3 py-2 text-sm hover:bg-white/10"
-          >
-            <Github className="size-4" /> GitHub
-          </motion.a>
-          <motion.a
-            href="https://2d7974f8-5fa5-4136-aaa2-354b07c4877e.filesusr.com/ugd/a966b5_f4890026c5b444fa945767c74232e285.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-1 rounded-xl border border-white/15 px-3 py-2 text-sm hover:bg-white/10"
-          >
-            <FileText className="size-4" /> Resume
-          </motion.a>
-          <CTAButton href="#contact">Book a Call</CTAButton>
+    <main className="relative min-h-screen overflow-hidden bg-[radial-gradient(60%_60%_at_50%_0%,rgba(255,255,255,0.12),rgba(0,0,0,0)_60%),linear-gradient(180deg,#0a0a0a,#050505)] text-white">
+
+      {/* Decorative animated orb */}
+      {!prefersReduced && (
+        <motion.div
+          aria-hidden="true"
+          initial={{ opacity: 0.25, scale: 0.9 }}
+          animate={{ opacity: 0.35, scale: 1.05 }}
+          transition={{ duration: 6, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
+          className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-96 w-96 rounded-full blur-3xl"
+          style={{
+            background:
+              "radial-gradient(closest-side, rgba(255,255,255,0.15), rgba(255,255,255,0.0))",
+          }}
+        />
+      )}
+
+      {/* NAV */}
+      <header className="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-black/30 bg-black/20 border-b border-white/10">
+        <div className="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
+          <a href="#home" className="font-semibold tracking-wide">Canyen Palmer</a>
+          <nav className="hidden md:flex items-center gap-6 text-sm">
+            <a href="#services" className="hover:opacity-80">Services</a>
+            <a href="#works" className="hover:opacity-80">Works</a>
+            <a href="#about" className="hover:opacity-80">About</a>
+            <a href="#testimonials" className="hover:opacity-80">Testimonials</a>
+            <a href="#contact" className="hover:opacity-80">Contact</a>
+          </nav>
+          <div className="flex gap-3">
+            <motion.a
+              href="https://2d7974f8-5fa5-4136-aaa2-354b07c4877e.filesusr.com/ugd/a966b5_24da15b6428845468f28168d8f7d0569.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-flex items-center gap-1 rounded-2xl border border-white/15 bg-white text-black px-4 py-2 font-semibold shadow-sm hover:shadow-lg transition-shadow"
+            >
+              <FileText className="size-4" /> Resume
+            </motion.a>
+            <CTAButton href="#contact">Book a Call</CTAButton>
+          </div>
         </div>
       </header>
 
@@ -318,197 +315,258 @@ export default function App() {
       <Section id="home" label="Hero" className="pt-16 md:pt-24">
         <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-center">
           <div className="md:col-span-7 space-y-6">
-            <RevealGroup delay={0.1} stagger={0.14}>
-              <Pill>Data Scientist</Pill>
+            <Pill>Data Scientist</Pill>
 
-              <HeroName text="CANYEN PALMER" />
+            <HeroName text="CANYEN PALMER" />
 
-              {/* Multi-line caption */}
-              <div className="text-white/85 max-w-2xl space-y-3">
-                <p className="text-lg md:text-xl">
-                  Data Scientist & Google Certified Data Analyst Professional specializing in statistics,
-                  machine learning, predictive modeling, and optimization.
-                </p>
+            {/* Multi-line caption */}
+            <div className="text-white/85 max-w-2xl space-y-3">
+              <p className="text-lg md:text-xl">
+                Data Scientist & Google Certified Data Analyst Professional specializing in statistics,
+                machine learning, predictive modeling, and optimization.
+              </p>
 
-                <p className="text-sm md:text-base">
-                  <span className="font-semibold">Proficiency:</span> Python, Excel, Tableau
-                </p>
-                <p className="text-sm md:text-base">
-                  <span className="font-semibold">Familiarities:</span> R, Java, SQL, Jes, Power BI, AI
-                </p>
-                <p className="text-sm md:text-base">
-                  <span className="font-semibold">Tech Stack:</span> Pandas/NumPy, Scipy, seaborn, Matplotlib,
-                  statsmodels, Tidyverse, Git, Jupyter, CSV, Quarto(.qmd)
-                </p>
+              <p className="text-sm md:text-base">
+                <span className="font-semibold">Proficiency:</span> Python, Excel, Tableau
+              </p>
+              <p className="text-sm md:text-base">
+                <span className="font-semibold">Familiarities:</span> R, Java, SQL, Jes, Power BI, AI
+              </p>
+              <p className="text-sm md:text-base">
+                <span className="font-semibold">Tech Stack:</span> Pandas/NumPy, Scipy, seaborn, Matplotlib,
+                statsmodels, Tidyverse, Git, Jupyter, CSV, Quarto(.qmd)
+              </p>
 
-                <p className="text-sm md:text-base text-white/80">
-                  In my spare time, I use machine learning and predictive analysis to refine golf strategy
-                  for family and friends. I also optimize data logs from simulator feedback to create yardage
-                  books for various golf courses!
-                </p>
-              </div>
+              <p className="text-sm md:text-base text-white/80">
+                In my spare time, I use machine learning and predictive analysis to refine golf strategy
+                for family and friends. I also optimize data logs from simulator feedback to create yardage
+                books for various golf courses!
+              </p>
+            </div>
 
-              <div className="flex items-center gap-4">
-                <CTAButton href="#contact">Let's Connect</CTAButton>
-                <motion.a whileHover={{ opacity: 0.85 }} href="#works" className="underline underline-offset-4">
-                  See my work
-                </motion.a>
-              </div>
+            <div className="flex items-center gap-4">
+              <CTAButton href="#contact">Let's Connect</CTAButton>
+              <motion.a whileHover={{ opacity: 0.85 }} href="#works" className="underline underline-offset-4">
+                See my work
+              </motion.a>
+            </div>
 
-              <div className="flex items-center gap-3 pt-2 text-sm text-white/70">
-                <span>Available for select collaborations</span>
-                <span className="opacity-50">•</span>
-                <span>Open to proposals</span>
-              </div>
-            </RevealGroup>
+            <div className="flex items-center gap-3 pt-2 text-sm text-white/70">
+              <span>Available for select collaborations</span>
+              <span className="opacity-50">•</span>
+              <span>Open to proposals</span>
+            </div>
           </div>
 
-          {/* Floating headshot card (restored sizing / animation) */}
+          {/* Floating headshot card */}
           <div className="md:col-span-5">
-            <Reveal y={12}>
-              <motion.div
-                initial={{ y: 0 }}
-                animate={prefersReduced ? {} : { y: [0, -8, 0] }}
-                transition={prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="aspect-[4/5] w-full rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
-              >
-                <img
-                  src={IMG.hero}
-                  alt="Canyen Palmer headshot"
-                  className="w-full h-full object-cover"
-                  width={960}
-                  height={1200}
-                  loading="eager"
-                  decoding="async"
-                />
-              </motion.div>
-            </Reveal>
+            <motion.div
+              initial={{ y: 0 }}
+              animate={prefersReduced ? {} : { y: [0, -8, 0] }}
+              transition={prefersReduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              className="aspect-[4/5] rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
+            >
+              <img
+                src={IMG.hero}
+                alt="Canyen Palmer headshot"
+                className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </motion.div>
           </div>
         </div>
       </Section>
 
-      {/* ABOUT */}
       <Divider />
-      <Section id="about" label="About" className="py-8 md:py-12">
-        <div className="max-w-3xl mx-auto">
-          <Reveal>
-            <SectionTitle text="About" />
-          </Reveal>
-          <div className="mt-6 space-y-4 text-white/85 leading-relaxed">
-            <Reveal>
-              <p>
-                I’m a data-driven problem solver who cares about clarity and outcomes. My toolkit spans
-                statistics, machine learning, and automation — always focused on shipping tools people actually use.
-              </p>
-            </Reveal>
-            <Reveal delay={0.08}>
-              <p>
-                Recently I’ve been building small web apps for operations teams, automating spreadsheet and PDF
-                workflows, and prototyping models that demonstrate value quickly.
-              </p>
-            </Reveal>
-            <Reveal delay={0.16}>
-              <p>
-                Outside of work, I apply analytics to golf strategy for my circle — turning simulator feedback into
-                practical yardage books and course-management insights.
-              </p>
-            </Reveal>
-          </div>
-        </div>
-      </Section>
 
       {/* SERVICES */}
-      <Divider />
-      <Section id="services" label="Services" className="py-8 md:py-12">
-        <Reveal>
-          <SectionTitle text="Services" />
-        </Reveal>
-        <div className="mt-8 grid md:grid-cols-3 gap-6 md:gap-8">
+      <Section id="services" label="Services" className="py-6">
+        <div className="mb-8">
+          <SectionTitle text="My Services" />
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
           {services.map((s, i) => (
-            <ServiceCard key={i} index={i} title={s.title} desc={s.desc} bullets={s.bullets} />
+            <ServiceCard key={i} index={i} {...s} />
           ))}
         </div>
       </Section>
 
-      {/* WORK / PROJECTS */}
       <Divider />
-      <Section id="works" label="Selected Work" className="py-8 md:py-12">
-        <Reveal>
-          <SectionTitle text="Selected Work" />
-        </Reveal>
-        <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+
+      {/* WORKS */}
+      <Section id="works" label="Selected Works" className="py-6">
+        <SectionTitle text="Projects" />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
           {works.map((w, i) => (
-            <WorkCard key={i} tag={w.tag} title={w.title} role={w.role} year={w.year} url={w.url} img={w.img} alt={w.alt} />
+            <WorkCard key={i} {...w} />
           ))}
         </div>
       </Section>
 
-      {/* TESTIMONIALS */}
       <Divider />
-      <Section id="testimonials" label="Testimonials" className="py-8 md:py-12">
-        <Reveal>
-          <SectionTitle text="Testimonials" />
-        </Reveal>
-        <div className="mt-8 grid md:grid-cols-2 gap-6 md:gap-8">
-          {testimonials.map((t, i) => (
-            <TestimonialCard key={i} quote={t.quote} name={t.name} role={t.role} />
-          ))}
-        </div>
-      </Section>
 
-      {/* CONTACT */}
-      <Divider />
-      <Section id="contact" label="Contact" className="py-12">
-        <div className="max-w-2xl mx-auto text-center">
-          <Reveal>
-            <SectionTitle text="Let’s Connect" />
-          </Reveal>
-          <Reveal delay={0.08}>
-            <p className="mt-4 text-white/80">
-              Have a project or idea you’d like to explore? I’m open to select collaborations.
+      {/* ABOUT */}
+      <Section id="about" label="About" className="py-6">
+        <SectionTitle text="About Me" />
+        <div className="grid md:grid-cols-12 gap-8 items-center mt-8">
+          <div className="md:col-span-5">
+            <motion.div
+              initial={{ scale: 0.98, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="aspect-square rounded-3xl border border-white/10 bg-white/5 overflow-hidden"
+            >
+              <img
+                src="/images/portrait.jpg"
+                alt="Canyen Palmer portrait"
+                className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </motion.div>
+          </div>
+          <div className="md:col-span-7 space-y-4">
+            <Pill>Designer, Developer, Creator</Pill>
+            <p className="text-white/85 leading-relaxed">
+              I turn business questions into deployable models and tools. I’m the Lead Analyst at Iconic Care Inc. (June 2025–present) and a Data Science M.S. student at the University of Pittsburgh (Aug 2025–present). Previously B.G.S. in Mathematics and A.A. in Computer Science from Ball State University. Tools I like: Python/Flask, React, SQLite, pandas, scikit-learn, tidyverse, and clean spreadsheets.
             </p>
-          </Reveal>
-          {/* BUTTON ROW — always visible (no Reveal wrapper) */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <CTAButton href="mailto:canyen2019@gmil.com">Email Me</CTAButton>
-            <motion.a
-              href="https://www.linkedin.com/in/canyen-palmer-b0b6762a0/"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2"
-            >
-              <Linkedin className="size-4" /> LinkedIn
-            </motion.a>
-            <motion.a
-              href="https://github.com/CanyenPalmer"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2"
-            >
-              <Github className="size-4" /> GitHub
-            </motion.a>
+            <p className="text-white/80 leading-relaxed">
+              Website tech stack: React, Tailwind CSS, Framer Motion, Lucide-react, JavaScript, HTML, CSS.
+            </p>
           </div>
         </div>
       </Section>
 
-      {/* LINKS (Footer) — no divider above, tight spacing, location + clock */}
-      <Section id="links" label="Links" className="py-6">
-        <Reveal>
-          <SectionTitle text="Links" />
-        </Reveal>
-        <div className="mt-4 flex flex-col items-center space-y-2 text-white/70">
-          <span>Indiana, USA</span>
-          <Clock />
-        </div>
-        <div className="mt-4 text-center text-white/60">
-          © {new Date().getFullYear()} Canyen Palmer
+      <Divider />
+
+      {/* TESTIMONIALS (Carousel) */}
+      <Section id="testimonials" label="Testimonials" className="py-6">
+        <SectionTitle text="Testimonials" />
+        <div className="mt-8 max-w-4xl mx-auto">
+          <div className="rounded-3xl border border-white/10 bg-white/[.03] p-6 md:p-10">
+            <motion.div
+              key={tIndex}
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.35 }}
+            >
+              <p className="text-xl md:text-2xl leading-relaxed text-center">
+                “{testimonials[tIndex].quote}”
+              </p>
+              <div className="mt-6 text-center text-white/80">
+                <strong>{testimonials[tIndex].author}</strong>
+                <span className="opacity-60"> — {testimonials[tIndex].title}</span>
+              </div>
+            </motion.div>
+
+            <div className="mt-8 flex items-center justify-between">
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                aria-label="Previous testimonial"
+                onClick={() => setTIndex((tIndex - 1 + testimonials.length) % testimonials.length)}
+                className="rounded-xl border border-white/15 px-4 py-2 hover:bg-white/10"
+              >
+                Prev
+              </motion.button>
+
+              <div className="flex items-center gap-2">
+                {testimonials.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setTIndex(i)}
+                    aria-label={`Go to testimonial ${i + 1}`}
+                    className={`h-2 w-2 rounded-full transition-opacity ${
+                      i === tIndex ? "bg-white opacity-100" : "bg-white/60 opacity-60"
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                aria-label="Next testimonial"
+                onClick={() => setTIndex((tIndex + 1) % testimonials.length)}
+                className="rounded-xl border border-white/15 px-4 py-2 hover:bg-white/10"
+              >
+                Next
+              </motion.button>
+            </div>
+
+            <div className="mt-3 text-center text-sm text-white/60">
+              {tIndex + 1} / {testimonials.length}
+            </div>
+          </div>
         </div>
       </Section>
+
+      <Divider />
+
+      {/* CONTACT */}
+      <Section id="contact" label="Contact" className="py-12">
+        <SectionTitle text="Connect With Me" />
+        <div className="grid md:grid-cols-12 gap-6 items-center mt-8">
+          <div className="md:col-span-8">
+            <div className="mt-6 flex flex-wrap items-center gap-4">
+              <CTAButton href="mailto:canyen2019@gmail.com">Get In Touch</CTAButton>
+              <a href="mailto:canyen2019@gmail.com" className="underline underline-offset-4">
+                canyen2019@gmail.com
+              </a>
+            </div>
+            <p className="mt-4 text-white/70">Working globally • Based in Indiana</p>
+          </div>
+          <div className="md:col-span-4">
+            <div className="rounded-3xl border border-white/10 p-6 space-y-3">
+              <div className="flex items-center gap-3">
+                <Mail className="size-4" />
+                <a href="mailto:canyen2019@gmail.com" className="hover:underline">Email</a>
+              </div>
+              <div className="flex items-center gap-3">
+                <Linkedin className="size-4" />
+                <a
+                  href="https://www.linkedin.com/in/canyen-palmer-b0b6762a0/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  LinkedIn
+                </a>
+              </div>
+              <div className="flex items-center gap-3">
+                <Github className="size-4" />
+                <a
+                  href="https://github.com/CanyenPalmer"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  GitHub
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* FOOTER */}
+      <footer className="mt-16 border-t border-white/10 bg-black/30">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid md:grid-cols-3 gap-6 items-center">
+          <div className="text-sm text-white/70">© {new Date().getFullYear()} Canyen Palmer. All rights reserved.</div>
+          <div className="text-center text-sm text-white/60">
+            Local time: <LocalTime timeZone="America/Indiana/Indianapolis" label="Indianapolis" />
+          </div>
+          <div className="flex justify-end gap-4 text-sm">
+            <a className="hover:underline" href="#home">Home</a>
+            <a className="hover:underline" href="#services">Services</a>
+            <a className="hover:underline" href="#works">Works</a>
+            <a className="hover:underline" href="#about">About</a>
+            <a className="hover:underline" href="#testimonials">Testimonials</a>
+            <a className="hover:underline" href="#contact">Contact</a>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }
-
