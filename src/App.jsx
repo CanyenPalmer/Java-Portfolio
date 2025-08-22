@@ -430,7 +430,7 @@ export default function App() {
           <div className="md:col-span-7 space-y-4">
             <Pill>Designer, Developer, Creator</Pill>
             <p className="text-white/85 leading-relaxed">
-              I turn business questions into deployable models and tools. I’m the Lead Analyst at Iconic Care Inc. (June 2025–present) and a Data Science M.S. student at the University of Pittsburgh (Aug 2025–present). Previously B.G.S. in Mathematics and A.A. in Computer Science from Ball State University. Tools I like: Python/Flask, React, SQLite, pandas, scikit-learn, tidyverse, and clean spreadsheets.
+              I turn business questions into deployable models and tools. Currently, I am a Data Science M.S. student at the University of Pittsburgh (Aug 2025–present). Previously B.G.S. in Mathematics and A.A. in Computer Science from Ball State University. I believe that the two most satisfying things in life are the sense of accomplishment and clean spreadsheets.
             </p>
             <p className="text-white/80 leading-relaxed">
               Website tech stack: React, Tailwind CSS, Framer Motion, Lucide-react, JavaScript, HTML, CSS.
